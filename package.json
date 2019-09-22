@@ -1,0 +1,76 @@
+{
+    "name": "class-json",
+    "description": "JSON serializer/derserializer with decorators",
+    "author": {
+        "name": "Alexander Kit",
+        "email": "alex.kit@atmajs.com"
+    },
+    "version": "0.2.55",
+    "main": "./lib/class-json.js",
+    "types": "./lib/class-json.d.ts",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/atmajs/class-json.git"
+    },
+    "devDependencies": {
+        "@types/sinon": "^2.3.3",
+        "app-bundler": "0.0.75",
+        "atma": "^0.12.7",
+        "atma-loader-ts": "^1.0.0",
+        "dts-bundle": "^0.7.3"
+    },
+    "scripts": {
+        "test": "atma test",
+        "build": "app-bundler && npm run build-dts",
+        "watch": "app-bundler --watch",
+        "server": "atma server",
+        "build-dts": "tsc -p . & atma run tools/build-dts"
+    },
+    "license": "MIT",
+    "app-bundler": {
+        "file": "src/export.ts",
+        "outputMain": "lib/class-json.js",
+        "package": {
+            "module": "commonjs",
+            "moduleName": "class-json",
+            "moduleWrapper": "umd",
+            "commonjs": {
+                "output": "simplified"
+            }
+        },
+        "defaultExtensions": {
+            "js": "ts"
+        },
+        "middlewares": {
+            "ts": [
+                "atma-loader-ts:read"
+            ]
+        }
+    },
+    "atma": {
+        "plugins": [
+            "atma-loader-ts"
+        ],
+        "settings": {
+            "include": {
+                "amd": true,
+                "extentionDefault": {
+                    "js": "ts"
+                }
+            },
+            "atma-loader-ts": {
+                "typescript": {
+                    "compilerOptions": {
+                        "target": "es2017",
+                        "#if (TEST)": {
+                            "module": "AMD"
+                        },
+                        "#if (!TEST)": {
+                            "module": "CommonJS"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
