@@ -4,18 +4,21 @@ Comprehensive JSON serialization decorators for a class.
 
 
 1. Decorators
-1.1 `@Json.type`
-1.2 `@Json.name`
-1.3 `@Json.ignore`
-1.4 `@Json.converter`
 
-
+    * `@Json.type`
+    * `@Json.name`
+    * `@Json.ignore`
+    * `@Json.converter`
+    
 2. Classes
-2.1 `Serializable`
+
+    * `Serializable`
 
 3. Namespaces
-3.1 `JsonConvert`
+
+    * `JsonConvert`
 
 
 ---
-(c) 2019 atmajs
+
+© 2019 atmajs
