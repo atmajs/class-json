@@ -1,7 +1,7 @@
 var dts = require('dts-bundle');
 
 dts.bundle({
-	name: 'ruta',
+	name: 'class-json',
 	main: './ts-temp/export.d.ts',
 	out: './typings/index.d.ts'
 });

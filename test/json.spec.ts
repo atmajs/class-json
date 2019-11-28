@@ -37,7 +37,7 @@ UTest({
     },
     'support DateTime properties and under score renamings' () {
                 
-        class Foo extends Serializable<Foo> {            
+        class Foo extends Serializable<Foo> {
             @Json.type(Date)
             createdAt: Date
         }
