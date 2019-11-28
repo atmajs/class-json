@@ -1,5 +1,7 @@
 import { JsonSettings } from './JsonSettings';
 import { JsonConvert } from './JsonConvert';
+
+
 export class Serializable<T> {
     constructor(partial?: Partial<T>) {
         if (partial) {
