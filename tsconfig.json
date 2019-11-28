@@ -1,24 +1,9 @@
 {
-    "files": [
-    	"src/export.ts"
-  	],
+    "exclude": ["node_modules"],
     "compilerOptions": {
         "outDir": "ts-temp",
-        "moduleResolution": "node",
-        "target": "es2017",
-        "lib": ["dom", "es2017"],
-        "typeRoots": [
-            "node_modules/@types",
-            "typings",
-            "typings/globals"
-        ],
-        "types": ["node", "assertion", "atma-utest"],
-        
-        "allowSyntheticDefaultImports": true,
-        "experimentalDecorators": true,
-        "declaration": true
-    },
-    "exclude": [
-        "node_modules"
-    ]
+        "declaration": true,
+        "sourceMap": false,
+        "experimentalDecorators": true
+    }
 }
