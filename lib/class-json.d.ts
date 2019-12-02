@@ -12,7 +12,8 @@ declare module 'class-json/Json' {
     export namespace Json {
         function ignore(): (target: any, propertyKey: any, descriptor?: any) => any;
         function name(name: any): (target: any, propertyKey: any, descriptor?: any) => any;
-        function type(Ctor: any, options?: any): (target: any, propertyKey: any, descriptor?: any) => any;
+        function type(Ctor: Function, options?: any): (target: any, propertyKey: any, descriptor?: any) => any;
+        function array(Ctor: Function, options?: any): (target: any, propertyKey: any, descriptor?: any) => any;
         function converter(Converter: Partial<IJsonConverter>): (target: any, propertyKey: any, descriptor?: any) => any;
         function stringify(): (target: any, propertyKey: any, descriptor?: any) => any;
     }

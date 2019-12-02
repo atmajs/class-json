@@ -16,11 +16,20 @@ export namespace Json {
             return descriptor;
         };
     }
-    export function type(Ctor, options?) {
+    export function type(Ctor: Function, options?) {
         return function (target, propertyKey, descriptor?) {
             var viaProperty = descriptor == null;
             let meta = JsonUtils.resolvePropertyMeta(target, propertyKey);
             meta.Type = Ctor;
+            meta.options = options;
+            return descriptor;
+        };
+    }
+    export function array(Ctor: Function, options?) {
+        return function (target, propertyKey, descriptor?) {
+            var viaProperty = descriptor == null;
+            let meta = JsonUtils.resolvePropertyMeta(target, propertyKey);
+            meta.ArrayType = Ctor;
             meta.options = options;
             return descriptor;
         };
