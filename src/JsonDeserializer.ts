@@ -55,6 +55,8 @@ export namespace JsonDeserializer {
             if (meta) {
                 return deserialize(val, meta, settings);
             }
+            let Ctor = info.Type as any;
+            return new Ctor(val);
         }
         if (Types.isValueType(val)) {
             return val;
