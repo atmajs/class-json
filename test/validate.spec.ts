@@ -5,7 +5,6 @@ import { JsonValidate } from '../src/JsonValidate';
 
 UTest({
     'required, min and max length' () {
-                
         class Foo {
 
             @Rule.required()
@@ -51,4 +50,17 @@ UTest({
         let props = errors.map(x => x.property);
         deepEq_(props, ['bar1.name','bar2.name','bar3.name']);
     },
+    'correct order' () {
+        class Foo {
+            
+            @Rule.required()
+            @Rule.pattern(/^\d+$/)
+            foo: string = null
+        }
+
+        let foo = new Foo();
+        let errors = JsonValidate.validate(foo);
+        eq_(errors.length, 1);
+        eq_(errors[0].name, 'Required');
+    }
 })

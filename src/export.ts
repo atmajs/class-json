@@ -1,4 +1,6 @@
 export { Json } from './Json'
+export { Rule } from './validation/Rule'
 export { JsonConvert } from './JsonConvert'
+export { JsonValidate } from './JsonValidate'
 export { Serializable } from './Serializable'
 export { JsonSettings } from './JsonSettings'

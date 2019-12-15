@@ -2,7 +2,9 @@
 
 declare module 'class-json' {
     export { Json } from 'class-json/Json';
+    export { Rule } from 'class-json/validation/Rule';
     export { JsonConvert } from 'class-json/JsonConvert';
+    export { JsonValidate } from 'class-json/JsonValidate';
     export { Serializable } from 'class-json/Serializable';
     export { JsonSettings } from 'class-json/JsonSettings';
 }
@@ -19,6 +21,16 @@ declare module 'class-json/Json' {
     }
 }
 
+declare module 'class-json/validation/Rule' {
+    export namespace Rule {
+        function required(): (target: any, propertyKey: any, descriptor?: any) => any;
+        function minLength(count: number): (target: any, propertyKey: any, descriptor?: any) => any;
+        function maxLength(count: number): (target: any, propertyKey: any, descriptor?: any) => any;
+        function pattern(pattern: string | RegExp): (target: any, propertyKey: any, descriptor?: any) => any;
+        function validate(fn: (val: any, root: any) => string, name?: string): (target: any, propertyKey: any, descriptor?: any) => any;
+    }
+}
+
 declare module 'class-json/JsonConvert' {
     import { JsonSettings } from 'class-json/JsonSettings';
     import { IJsonConverter } from 'class-json/IJsonConverter';
@@ -27,6 +39,16 @@ declare module 'class-json/JsonConvert' {
         function fromJson<T>(json: any, settings?: JsonSettings): any;
     }
     export const JsonConverters: IJsonConverter[];
+}
+
+declare module 'class-json/JsonValidate' {
+    import { IRuleError } from 'class-json/validation/IRule';
+    export interface IValidationSettings {
+        Type?: new <T = any>(...args: any[]) => T;
+    }
+    export namespace JsonValidate {
+        function validate(model: any, settings?: IValidationSettings): IRuleError[];
+    }
 }
 
 declare module 'class-json/Serializable' {
@@ -55,6 +77,18 @@ declare module 'class-json/IJsonConverter' {
     }
 }
 
+declare module 'class-json/validation/IRule' {
+    export interface IRule<T = any> {
+        validate(value: any, root: any): IRuleError<T>;
+    }
+    export interface IRuleError<T = any> {
+        name: string;
+        property: string;
+        value: T;
+        message: string;
+    }
+}
+
 declare module 'class-json/PropertyInfo' {
     import { IJsonConverter } from 'class-json/IJsonConverter';
     import { IRule } from 'class-json/validation/IRule';
@@ -68,18 +102,6 @@ declare module 'class-json/PropertyInfo' {
         Converter?: Partial<IJsonConverter>;
         rules?: IRule[];
         options?: any;
-    }
-}
-
-declare module 'class-json/validation/IRule' {
-    export interface IRule<T = any> {
-        validate(value: any, root: any): IRuleError<T>;
-    }
-    export interface IRuleError<T = any> {
-        name: string;
-        property: string;
-        value: T;
-        message: string;
     }
 }
 

@@ -5,7 +5,6 @@ import { Types } from './Types';
 
 export interface IValidationSettings {
     Type?: new <T = any> (...args) => T
-    //properties?: { [key: string]: IRule[] }
 }
 
 export namespace JsonValidate {
