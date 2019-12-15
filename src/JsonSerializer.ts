@@ -7,24 +7,24 @@ import { is_rawObject } from './utils/is';
 
 
 export namespace JsonSerializer {
-    export function resolveValue(val: any, info: PropertyInfo, settings: JsonSettings) {
+    export function toJsonValue(val: any, info: PropertyInfo, settings: JsonSettings) {
+        if (info?.Converter?.toJson) {
+            return info.Converter.toJson(val, info, settings);
+        }
         if (Types.isValueType(val)) {
             return val;
-        }
-        if (info && info.Converter && info.Converter.toJson) {
-            return info.Converter.toJson(val, info, settings);
         }
         if (Types.isArray(val)) {
             let arr = new Array(val.length);
             for (let i = 0; i < val.length; i++) {
-                arr[i] = JsonSerializer.resolveValue(val[i], info, settings);
+                arr[i] = JsonSerializer.toJsonValue(val[i], info, settings);
             }
             return arr;
         }
         if (is_rawObject(val)) {
             let obj = Object.create(null);
             for (let key in val) {
-                obj[key] = JsonSerializer.resolveValue(val[key], null, settings);
+                obj[key] = JsonSerializer.toJsonValue(val[key], null, settings);
             }
             return obj;
         }
@@ -38,11 +38,14 @@ export namespace JsonSerializer {
         }
         return val;
     }
-    export function resolveName(key: string, info: PropertyInfo, settings: JsonSettings) {
-        if (info && info.jsonName != null) {
+    export function toJsonName(key: string, info: PropertyInfo, settings: JsonSettings) {
+        if (info?.jsonName != null) {
             return info.jsonName;
         }
-        let type = settings && settings.propertyResolver || 'camelCase';
+        let type = settings?.propertyResolver;
+        if (type == null) {
+            return key;
+        }
         if (type === 'camelCase') {
             return key.replace(/(?<=.)_(\w)/g, (full, letter) => letter.toUpperCase());
         }

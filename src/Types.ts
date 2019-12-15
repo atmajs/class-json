@@ -8,6 +8,20 @@ export namespace Types {
         return is_Array(x);
     }
     export function isObject(x): x is object {
-        return x != null && typeof x === 'object' && is_Array(x) === false;
+        if (x == null || typeof x !== 'object') {
+            return false;
+        }
+        if (is_Array(x)) {
+            return false;
+        }
+        if (x instanceof Date || 
+            x instanceof RegExp || 
+            x instanceof Number || 
+            x instanceof String) {
+
+                return false;
+            }
+
+        return true;
     }
 }

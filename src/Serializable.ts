@@ -10,8 +10,9 @@ export class Serializable<T> {
             }
         }
     }
-    static fromJson(json, settings?: JsonSettings) {
-        return JsonConvert.fromJson(json, this, settings);
+    static fromJson(json, settings: JsonSettings = { Type: null }) {
+        settings.Type = settings.Type ?? this;
+        return JsonConvert.fromJson(json, settings);
     }
     toJson(settings?: JsonSettings) {
         return JsonConvert.toJson(this, settings);

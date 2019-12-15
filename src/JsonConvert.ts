@@ -11,7 +11,7 @@ export namespace JsonConvert {
         if (Types.isArray(model)) {
             return model.map(x => toJson(x, settings));
         }
-        let meta = JsonUtils.pickModelMeta(model);
+        let meta = JsonUtils.pickModelMeta(model) ?? JsonUtils.pickModelMeta(settings?.Type);
         let json = Object.create(null);
 
         for (let key in model) {
@@ -20,18 +20,18 @@ export namespace JsonConvert {
                 continue;
             }
 
-            let property = JsonSerializer.resolveName(key, propertyInfo, settings);
-            let val = JsonSerializer.resolveValue(model[key], propertyInfo, settings);
+            let property = JsonSerializer.toJsonName(key, propertyInfo, settings);
+            let val = JsonSerializer.toJsonValue(model[key], propertyInfo, settings);
             json[property] = val;
         }
         return json;
     }
-    export function  fromJson <T> (json, Ctor: new (...args) => T, settings?: JsonSettings) {
+    export function  fromJson <T> (json, settings?: JsonSettings) {
         if (Types.isArray(json)) {
-            return json.map(x => fromJson(x, Ctor, settings));
+            return json.map(x => fromJson(x, settings));
         }
-
-        let meta = JsonUtils.pickModelMeta(Ctor) || { Type: Ctor, properties: {} };
+        let Type = settings?.Type;
+        let meta = JsonUtils.pickModelMeta(Type) || { Type, properties: {} };
         return JsonDeserializer.deserialize(json, meta, settings);
     }
 }

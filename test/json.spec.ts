@@ -31,7 +31,7 @@ UTest({
         let json = JsonConvert.toJson(f);
         deepEq_(json, { bar: 'lorem' });
 
-        let f2 = JsonConvert.fromJson <Foo> (json, Foo);
+        let f2 = JsonConvert.fromJson <Foo> (json, { Type: Foo });
         deepEq_(f2, { foo: 'lorem' });
         eq_(f2.toString(), 'lorem');
     },

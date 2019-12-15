@@ -24,7 +24,7 @@ declare module 'class-json/JsonConvert' {
     import { IJsonConverter } from 'class-json/IJsonConverter';
     export namespace JsonConvert {
         function toJson(model: any, settings?: JsonSettings): any;
-        function fromJson<T>(json: any, Ctor: new (...args: any[]) => T, settings?: JsonSettings): any;
+        function fromJson<T>(json: any, settings?: JsonSettings): any;
     }
     export const JsonConverters: IJsonConverter[];
 }
@@ -41,6 +41,7 @@ declare module 'class-json/Serializable' {
 declare module 'class-json/JsonSettings' {
     export interface JsonSettings {
         propertyResolver?: 'camelCase' | 'underScore';
+        Type?: new (...args: any[]) => any;
     }
 }
 
@@ -56,6 +57,7 @@ declare module 'class-json/IJsonConverter' {
 
 declare module 'class-json/PropertyInfo' {
     import { IJsonConverter } from 'class-json/IJsonConverter';
+    import { IRule } from 'class-json/validation/IRule';
     export interface PropertyInfo {
         property?: string;
         jsonIgnore?: boolean;
@@ -64,7 +66,20 @@ declare module 'class-json/PropertyInfo' {
         ArrayType?: Function;
         MapType?: Function;
         Converter?: Partial<IJsonConverter>;
+        rules?: IRule[];
         options?: any;
+    }
+}
+
+declare module 'class-json/validation/IRule' {
+    export interface IRule<T = any> {
+        validate(value: any, root: any): IRuleError<T>;
+    }
+    export interface IRuleError<T = any> {
+        name: string;
+        property: string;
+        value: T;
+        message: string;
     }
 }
 
