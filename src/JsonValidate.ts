@@ -15,6 +15,9 @@ export namespace JsonValidate {
     }
 
     function validateByMeta (model: any, root, meta: ModelInfo, path: string): IRuleError[] {
+        if (meta == null) {
+            return null;
+        }
         let result: IRuleError[] = null;
         for (let key in model) {
             let val = model[key];
