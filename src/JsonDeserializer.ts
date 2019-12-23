@@ -5,6 +5,7 @@ import { ModelInfo } from './ModelInfo';
 import { Types } from './Types';
 import { JsonConverters } from './JsonConvert';
 import { Serializable } from "./Serializable";
+import { JsonSerializer } from './JsonSerializer';
 export namespace JsonDeserializer {
     export function deserialize(json, meta: ModelInfo, settings: JsonSettings) {
         let model = toModelJson(json, meta, settings);
@@ -78,6 +79,7 @@ export namespace JsonDeserializer {
         if (info) {
             return info.property;
         }
-        return key.replace(/(?<=.)_([a-z])/g, (full, letter) => letter.toUpperCase());
+        return JsonSerializer.toJsonName(key, info, settings);
+        //return key.replace(/(?<=.)_([a-z])/g, (full, letter) => letter.toUpperCase());
     }
 }
