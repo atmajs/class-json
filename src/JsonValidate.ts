@@ -3,8 +3,8 @@ import { JsonUtils } from './JsonUtils';
 import { ModelInfo } from './ModelInfo';
 import { Types } from './Types';
 
-export interface IValidationSettings {
-    Type?: new <T = any> (...args) => T
+export interface IValidationSettings<T = any> {
+    Type?: new (...args) => T
 }
 
 export namespace JsonValidate {

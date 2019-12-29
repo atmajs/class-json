@@ -43,8 +43,8 @@ declare module 'class-json/JsonConvert' {
 
 declare module 'class-json/JsonValidate' {
     import { IRuleError } from 'class-json/validation/IRule';
-    export interface IValidationSettings {
-        Type?: new <T = any>(...args: any[]) => T;
+    export interface IValidationSettings<T = any> {
+        Type?: new (...args: any[]) => T;
     }
     export namespace JsonValidate {
         function validate(model: any, settings?: IValidationSettings): IRuleError[];
@@ -53,9 +53,11 @@ declare module 'class-json/JsonValidate' {
 
 declare module 'class-json/Serializable' {
     import { JsonSettings } from 'class-json/JsonSettings';
+    import { IValidationSettings } from 'class-json/JsonValidate';
     export class Serializable<T> {
         constructor(partial?: Partial<T>);
         static fromJson(json: any, settings?: JsonSettings): any;
+        static validate(x: any, settings?: IValidationSettings): import("./validation/IRule").IRuleError<any>[];
         toJson(settings?: JsonSettings): any;
     }
 }
