@@ -13,15 +13,18 @@ export namespace JsonConvert {
         }
         let meta = JsonUtils.pickModelMeta(model) ?? JsonUtils.pickModelMeta(settings?.Type);
         let json = Object.create(null);
-
+       
         for (let key in model) {
-            let propertyInfo = meta && meta.properties[key];
+            let propertyInfo = meta?.properties[key];
             if (propertyInfo != null && propertyInfo.jsonIgnore) {
                 continue;
             }
-
+            let modelVal = model[key];
+            if (typeof modelVal === 'function') {
+                continue;
+            }
             let property = JsonSerializer.toJsonName(key, propertyInfo, settings);
-            let val = JsonSerializer.toJsonValue(model[key], propertyInfo, settings);
+            let val = JsonSerializer.toJsonValue(modelVal, propertyInfo, settings);
             json[property] = val;
         }
         return json;

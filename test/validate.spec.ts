@@ -63,4 +63,5 @@ UTest({
         eq_(errors.length, 1);
         eq_(errors[0].name, 'Required');
     }
-})
+});
+

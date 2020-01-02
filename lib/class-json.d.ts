@@ -7,6 +7,7 @@ declare module 'class-json' {
     export { JsonValidate } from 'class-json/JsonValidate';
     export { Serializable } from 'class-json/Serializable';
     export { JsonSettings } from 'class-json/JsonSettings';
+    export { JsonUtils } from 'class-json/JsonUtils';
 }
 
 declare module 'class-json/Json' {
@@ -69,6 +70,21 @@ declare module 'class-json/JsonSettings' {
     }
 }
 
+declare module 'class-json/JsonUtils' {
+    import { ModelInfo } from "class-json/ModelInfo";
+    import { PropertyInfo } from "class-json/PropertyInfo";
+    import { IRule } from 'class-json/validation/IRule';
+    export namespace JsonUtils {
+        const META_KEY = "__json__";
+        function pickModelMeta<TAdditional = void>(mix: object | Function): ModelInfo & TAdditional;
+        function hasModelMeta(mix: object | Function): boolean;
+        function pickPropertyMeta<TAdditional = void>(target: object | Function, propertyKey: string): PropertyInfo & TAdditional;
+        function resolvePropertyMeta<TAdditional = void>(target: object | Function, propertyKey: string): PropertyInfo & TAdditional;
+        function pickPropertyRuleMeta(target: object | Function, propertyKey: string): IRule[];
+        function resolvePropertyRules(target: object | Function, propertyKey: string): IRule[];
+    }
+}
+
 declare module 'class-json/IJsonConverter' {
     import { JsonSettings } from 'class-json/JsonSettings';
     import { PropertyInfo } from "class-json/PropertyInfo";
@@ -88,6 +104,16 @@ declare module 'class-json/validation/IRule' {
         property: string;
         value: T;
         message: string;
+    }
+}
+
+declare module 'class-json/ModelInfo' {
+    import { PropertyInfo } from 'class-json/PropertyInfo';
+    export interface ModelInfo<T = any> {
+        Type: new (...args: any[]) => T;
+        properties: {
+            [name: string]: PropertyInfo;
+        };
     }
 }
 

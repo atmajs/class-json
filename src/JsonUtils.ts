@@ -3,7 +3,7 @@ import { PropertyInfo } from "./PropertyInfo";
 import { IRule } from './validation/IRule';
 export namespace JsonUtils {
     export const META_KEY = '__json__';
-    export function pickModelMeta(mix: object | Function): ModelInfo {
+    export function pickModelMeta <TAdditional = void> (mix: object | Function): ModelInfo & TAdditional {
         if (mix == null) {
             return null;
         }
@@ -12,14 +12,14 @@ export namespace JsonUtils {
     export function hasModelMeta(mix: object | Function): boolean {
         return pickModelMeta(mix) != null;
     }
-    export function pickPropertyMeta(target: object | Function, propertyKey: string): PropertyInfo {
-        let meta = pickModelMeta(target);
-        return meta?.properties[propertyKey];
+    export function pickPropertyMeta <TAdditional = void> (target: object | Function, propertyKey: string): PropertyInfo & TAdditional {
+        let meta = pickModelMeta <TAdditional> (target);
+        return meta?.properties[propertyKey] as any;
     }
-    export function resolvePropertyMeta(target: object | Function, propertyKey: string): PropertyInfo {
-        let meta = target[META_KEY];
+    export function resolvePropertyMeta <TAdditional = void> (target: object | Function, propertyKey: string): PropertyInfo & TAdditional {
+        let meta: ModelInfo & TAdditional = target[META_KEY];
         if (meta == null) {
-            meta = {
+            meta = <any> {
                 Type: typeof target === 'function' ? target : target.constructor,
                 properties: {}
             };
@@ -32,10 +32,10 @@ export namespace JsonUtils {
                 rules: null
             };
         }
-        return propertyInfo;
+        return propertyInfo as any;
     }
 
-    export function pickPropertyRuleMeta(target: object | Function, propertyKey: string): IRule[] {
+    export function pickPropertyRuleMeta (target: object | Function, propertyKey: string): IRule[] {
         let propInfo = pickPropertyMeta(target, propertyKey);
         return propInfo?.rules;
     }

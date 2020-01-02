@@ -1,10 +1,10 @@
 import { JsonConvert } from '../src/JsonConvert';
 import { Json } from '../src/Json'
 import { Serializable } from '../src/Serializable';
+import { JsonUtils } from '../src/export';
 
 UTest({
     'add rename meta to property' () {
-                
         class Foo {
 
             @Json.name('bar')
@@ -14,9 +14,9 @@ UTest({
         }
 
         let f = new Foo();        
-        let meta = (f as any).__json__;
+        let meta = JsonUtils.pickModelMeta(f);
 
-        deepEq_(meta, {
+        has_(meta, {
             Type: Foo,
             properties: {
                 foo: {
@@ -49,8 +49,7 @@ UTest({
         let json = f.toJson({ propertyResolver: 'underScore' });
         deepEq_(json, { created_at: f.createdAt.toISOString() });
 
-        let f2 = Foo.fromJson(json);
-
+        let f2 = Foo.fromJson(json, { propertyResolver: 'camelCase' });
         is_(f2.createdAt, Date);
         eq_(f2.createdAt.toString(), f.createdAt.toString());
     },    
