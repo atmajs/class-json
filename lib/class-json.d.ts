@@ -60,6 +60,7 @@ declare module 'class-json/Serializable' {
         static fromJson(json: any, settings?: JsonSettings): any;
         static validate(x: any, settings?: IValidationSettings): import("./validation/IRule").IRuleError<any>[];
         toJson(settings?: JsonSettings): any;
+        toJSON(): any;
     }
 }
 
@@ -76,11 +77,12 @@ declare module 'class-json/JsonUtils' {
     import { IRule } from 'class-json/validation/IRule';
     export namespace JsonUtils {
         const META_KEY = "__json__";
+        function resolveModelMeta<TAdditional = void>(mix: object | Function): ModelInfo & TAdditional;
         function pickModelMeta<TAdditional = void>(mix: object | Function): ModelInfo & TAdditional;
         function hasModelMeta(mix: object | Function): boolean;
         function pickPropertyMeta<TAdditional = void>(target: object | Function, propertyKey: string): PropertyInfo & TAdditional;
         function resolvePropertyMeta<TAdditional = void>(target: object | Function, propertyKey: string): PropertyInfo & TAdditional;
-        function pickPropertyRuleMeta(target: object | Function, propertyKey: string): IRule[];
+        function pickPropertyRules(target: object | Function, propertyKey: string): IRule[];
         function resolvePropertyRules(target: object | Function, propertyKey: string): IRule[];
     }
 }

@@ -64,6 +64,6 @@ export const JsonConverters: IJsonConverter[] = [
             return new RegExp(pattern, flags);
         }
     }
-]
+];
 
 

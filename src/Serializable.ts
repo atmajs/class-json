@@ -24,4 +24,7 @@ export class Serializable<T> {
     toJson(settings?: JsonSettings) {
         return JsonConvert.toJson(this, settings);
     }
+    toJSON() {
+        return JsonConvert.toJson(this);
+    }
 }

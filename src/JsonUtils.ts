@@ -3,6 +3,21 @@ import { PropertyInfo } from "./PropertyInfo";
 import { IRule } from './validation/IRule';
 export namespace JsonUtils {
     export const META_KEY = '__json__';
+    export function resolveModelMeta <TAdditional = void> (mix: object | Function): ModelInfo & TAdditional {
+        if (mix == null) {
+            return null;
+        }
+        let target = typeof mix === 'function' ? mix.prototype : mix;
+        let meta = target[META_KEY];
+        if (meta == null) {
+            meta = <any> {
+                Type: typeof mix === 'function' ? mix : mix.constructor,
+                properties: {}
+            };
+            Object.defineProperty(target, META_KEY, { enumerable: false, configurable: true, value: meta });
+        }
+        return meta;
+    }
     export function pickModelMeta <TAdditional = void> (mix: object | Function): ModelInfo & TAdditional {
         if (mix == null) {
             return null;
@@ -17,14 +32,7 @@ export namespace JsonUtils {
         return meta?.properties[propertyKey] as any;
     }
     export function resolvePropertyMeta <TAdditional = void> (target: object | Function, propertyKey: string): PropertyInfo & TAdditional {
-        let meta: ModelInfo & TAdditional = target[META_KEY];
-        if (meta == null) {
-            meta = <any> {
-                Type: typeof target === 'function' ? target : target.constructor,
-                properties: {}
-            };
-            Object.defineProperty(target, META_KEY, { enumerable: false, configurable: true, value: meta });
-        }
+        let meta: ModelInfo & TAdditional = resolveModelMeta(target);
         let propertyInfo = meta.properties[propertyKey];
         if (propertyInfo == null) {
             propertyInfo = meta.properties[propertyKey] = <PropertyInfo>{
@@ -34,8 +42,7 @@ export namespace JsonUtils {
         }
         return propertyInfo as any;
     }
-
-    export function pickPropertyRuleMeta (target: object | Function, propertyKey: string): IRule[] {
+    export function pickPropertyRules (target: object | Function, propertyKey: string): IRule[] {
         let propInfo = pickPropertyMeta(target, propertyKey);
         return propInfo?.rules;
     }
