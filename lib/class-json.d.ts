@@ -53,14 +53,15 @@ declare module 'class-json/JsonValidate' {
 }
 
 declare module 'class-json/Serializable' {
-    import { JsonSettings } from 'class-json/JsonSettings';
+    import { IRuleError } from 'class-json/validation/IRule'; 
+     import { JsonSettings } from 'class-json/JsonSettings';
     import { IValidationSettings } from 'class-json/JsonValidate';
     export class Serializable<T> {
-        constructor(partial?: Partial<T>);
-        static fromJson(json: any, settings?: JsonSettings): any;
-        static validate(x: any, settings?: IValidationSettings): import("./validation/IRule").IRuleError<any>[];
-        toJson(settings?: JsonSettings): any;
-        toJSON(): any;
+            constructor(partial?: Partial<T>);
+            static fromJson(json: any, settings?: JsonSettings): any;
+            static validate(x: any, settings?: IValidationSettings): IRuleError<any>[];
+            toJson(settings?: JsonSettings): any;
+            toJSON(): any;
     }
 }
 
