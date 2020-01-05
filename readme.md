@@ -1,3 +1,19 @@
+<p align='center'>
+    <b><code>{</code></b>
+    <code>class:json</code>
+    <b><code>}</code></b>
+</p>
+
+<p align="center">
+    <a href='https://travis-ci.org/atmajs/class-json' target='_blank'>
+        <img src='https://travis-ci.org/atmajs/class-json.png?branch=master' />
+    </a>
+    <a href='http://badge.fury.io/js/class-json' target='_blank'>
+        <img src='https://badge.fury.io/js/class-json.svg' />
+    </a>
+</p>
+
+
 Comprehensive JSON library for a class.
 
 > with TypeScript support
@@ -5,12 +21,15 @@ Comprehensive JSON library for a class.
 
 1. Decorators
     1.1 Converting
+        
         * `@Json.type(Ctor: Function, options?)`
         * `@Json.array(Ctor: Function, options?)`
         * `@Json.name(jsonName: string)`
         * `@Json.ignore()`
         * `@Json.converter(converter: IJsonConverter)`
+
     1.2 Validation
+        
         * `@Rule.required()`
         * `@Rule.minLength(count: number)`
         * `@Rule.maxLength(count: number)`

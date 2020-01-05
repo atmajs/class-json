@@ -27,10 +27,18 @@ export namespace Json {
     }
     export function array(Ctor: Function, options?) {
         return function (target, propertyKey, descriptor?) {
-            var viaProperty = descriptor == null;
             let meta = JsonUtils.resolvePropertyMeta(target, propertyKey);
             meta.ArrayType = Ctor;
             meta.options = options;
+            return descriptor;
+        };
+    }
+    export function value (mix: any) {
+        return function (target, propertyKey, descriptor?) {
+            let meta = JsonUtils.resolveModelMeta(target);
+            let defs = meta.defaults ?? (meta.defaults = {});
+            
+            defs[propertyKey] = mix;
             return descriptor;
         };
     }

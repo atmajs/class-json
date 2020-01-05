@@ -17,6 +17,7 @@ declare module 'class-json/Json' {
         function name(name: any): (target: any, propertyKey: any, descriptor?: any) => any;
         function type(Ctor: Function, options?: any): (target: any, propertyKey: any, descriptor?: any) => any;
         function array(Ctor: Function, options?: any): (target: any, propertyKey: any, descriptor?: any) => any;
+        function value(mix: any): (target: any, propertyKey: any, descriptor?: any) => any;
         function converter(Converter: Partial<IJsonConverter>): (target: any, propertyKey: any, descriptor?: any) => any;
         function stringify(): (target: any, propertyKey: any, descriptor?: any) => any;
     }
@@ -59,9 +60,11 @@ declare module 'class-json/Serializable' {
     export class Serializable<T> {
             constructor(partial?: Partial<T>);
             static fromJson(json: any, settings?: JsonSettings): any;
+            static fromJSON(json: any, settings?: JsonSettings): any;
             static validate(x: any, settings?: IValidationSettings): IRuleError<any>[];
             toJson(settings?: JsonSettings): any;
-            toJSON(): any;
+            toJSON(settings?: JsonSettings): any;
+            assign(partial?: Partial<T>): this;
     }
 }
 
@@ -115,7 +118,10 @@ declare module 'class-json/ModelInfo' {
     export interface ModelInfo<T = any> {
         Type: new (...args: any[]) => T;
         properties: {
-            [name: string]: PropertyInfo;
+            [name in keyof T]: PropertyInfo;
+        };
+        defaults: {
+            [name in keyof T]: any;
         };
     }
 }

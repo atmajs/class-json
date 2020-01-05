@@ -4,6 +4,7 @@ import { JsonUtils } from './JsonUtils';
 import { Types } from './Types';
 import { JsonDeserializer } from './JsonDeserializer';
 import { JsonSerializer } from './JsonSerializer';
+import { ModelInfo } from './ModelInfo';
 
 
 export namespace JsonConvert {
@@ -34,7 +35,7 @@ export namespace JsonConvert {
             return json.map(x => fromJson(x, settings));
         }
         let Type = settings?.Type;
-        let meta = JsonUtils.pickModelMeta(Type) || { Type, properties: {} };
+        let meta = JsonUtils.pickModelMeta(Type) || getMetaFor(Type);
         return JsonDeserializer.deserialize(json, meta, settings);
     }
 }
@@ -66,4 +67,13 @@ export const JsonConverters: IJsonConverter[] = [
     }
 ];
 
-
+/** Perf: reuse default empty metas */
+const DEFAULT_META = <ModelInfo> {
+    Type: null,
+    properties: {},
+    defaults: null
+};
+function getMetaFor(Type) {
+    DEFAULT_META.Type = Type;
+    return DEFAULT_META;
+}

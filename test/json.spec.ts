@@ -46,10 +46,10 @@ UTest({
             createdAt: new Date
         });
 
-        let json = f.toJson({ propertyResolver: 'underScore' });
+        let json = f.toJSON({ propertyResolver: 'underScore' });
         deepEq_(json, { created_at: f.createdAt.toISOString() });
 
-        let f2 = Foo.fromJson(json, { propertyResolver: 'camelCase' });
+        let f2 = Foo.fromJSON(json, { propertyResolver: 'camelCase' });
         is_(f2.createdAt, Date);
         eq_(f2.createdAt.toString(), f.createdAt.toString());
     },    
@@ -58,5 +58,17 @@ UTest({
         let model = { number: Math.random() };
         let json = JsonConvert.toJson(model);
         deepEq_(model, json);
+    },
+
+    'should deserialize default values' () {
+        class Foo extends Serializable<Foo> {
+            
+            @Json.value('foo')
+            name: string
+        }
+        eq_(new Foo().name, 'foo');
+
+        eq_(new Foo({}).name, 'foo');
+        eq_(new Foo({ name: 'bar' }).name, 'bar');
     }
 })
