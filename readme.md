@@ -1,8 +1,8 @@
-<p align='center'>
+<h1 align='center'>
     <b><code>{</code></b>
     <code>class:json</code>
     <b><code>}</code></b>
-</p>
+</h1>
 
 <p align="center">
     <a href='https://travis-ci.org/atmajs/class-json' target='_blank'>

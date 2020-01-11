@@ -47,12 +47,22 @@ export namespace JsonSerializer {
             return key;
         }
         if (type === 'camelCase') {
-            return key.replace(/(?<=.)_(\w)/g, (full, letter) => letter.toUpperCase());
+            return key.replace(/(_+)(\w)/g, (full, underscore, letter, i) => {
+                if (i === 0) {
+                    return full;
+                }
+                return letter.toUpperCase()
+            });
         }
         if (type === 'underScore') {
             return key
                 .replace(/^([A-Z])/, (full, letter) => `${letter.toLowerCase()}`)
-                .replace(/(?<=.)([A-Z])/g, (full, letter) => `_${letter.toLowerCase()}`);
+                .replace(/([A-Z])/g, (full, letter, i) => {
+                    if (i === 0) {
+                        return full;
+                    }
+                    return `_${letter.toLowerCase()}`;
+                });
         }
         throw new Error(`Invalid propertyResolver name: ${type}`);
     }

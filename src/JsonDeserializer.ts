@@ -80,6 +80,5 @@ export namespace JsonDeserializer {
             return info.property;
         }
         return JsonSerializer.toJsonName(key, info, settings);
-        //return key.replace(/(?<=.)_([a-z])/g, (full, letter) => letter.toUpperCase());
     }
 }
