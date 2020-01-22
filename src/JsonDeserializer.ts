@@ -40,7 +40,7 @@ export namespace JsonDeserializer {
         var model = Object.create(null);
         for (let key in json) {
             let property = resolveName(key, nameMappings, meta, settings);
-            let info = meta && meta.properties[property];
+            let info = meta?.properties[property];
             let value = resolveValue(json[key], info, settings);
             model[property] = value;
         }
@@ -68,9 +68,10 @@ export namespace JsonDeserializer {
         if (Types.isArray(val)) {
             let out = new Array(val.length);
             let arrayType = info?.ArrayType;
+            let converter = info?.Converter;
             let itemInfo = <PropertyInfo> {
                 Type: arrayType,
-                Converter: info.Converter
+                Converter: converter
             };
             for (let i = 0; i < val.length; i++) {
                 out[i] = resolveValue(val[i], itemInfo, settings);

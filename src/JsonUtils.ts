@@ -1,6 +1,7 @@
 import { ModelInfo } from "./ModelInfo";
 import { PropertyInfo } from "./PropertyInfo";
 import { IRule } from './validation/IRule';
+import { obj_clone } from './utils/obj';
 export namespace JsonUtils {
     export const META_KEY = '__json__';
     export function resolveModelMeta <TAdditional = void> (mix: object | Function): ModelInfo & TAdditional {
@@ -9,6 +10,17 @@ export namespace JsonUtils {
         }
         let target = typeof mix === 'function' ? mix.prototype : mix;
         let meta = target[META_KEY];
+        if (meta != null) {
+            if (target.hasOwnProperty(META_KEY) === false) {
+                // was inherited
+                meta = obj_clone(meta);
+                Object.defineProperty(target, META_KEY, {
+                    enumerable: false, 
+                    configurable: true, 
+                    value: meta 
+                });
+            }
+        }
         if (meta == null) {
             meta = <any> {
                 Type: typeof mix === 'function' ? mix : mix.constructor,
