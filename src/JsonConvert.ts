@@ -9,8 +9,12 @@ import { ModelInfo } from './ModelInfo';
 
 export namespace JsonConvert {
     export function toJson (model, settings?: JsonSettings) {
+        console.warn('Obsolete (static toJson) - use toJSON instead');
+        return toJSON(model, settings);
+    }
+    export function toJSON (model, settings?: JsonSettings) {
         if (Types.isArray(model)) {
-            return model.map(x => toJson(x, settings));
+            return model.map(x => toJSON(x, settings));
         }
         let meta = JsonUtils.pickModelMeta(model) ?? JsonUtils.pickModelMeta(settings?.Type);
         let json = Object.create(null);
@@ -30,13 +34,27 @@ export namespace JsonConvert {
         }
         return json;
     }
-    export function  fromJson <T> (json, settings?: JsonSettings) {
+    export function fromJson (model, settings?: JsonSettings) {
+        console.warn('Obsolete (static toJson) - use toJSON instead');
+        return toJSON(model, settings);
+    }
+    export function  fromJSON <T> (json, settings?: JsonSettings) {
         if (Types.isArray(json)) {
-            return json.map(x => fromJson(x, settings));
+            return json.map(x => fromJSON(x, settings));
         }
         let Type = settings?.Type;
         let meta = JsonUtils.pickModelMeta(Type) || getMetaFor(Type);
         return JsonDeserializer.deserialize(json, meta, settings);
+    }
+
+    export function stringify (instance, settings?: JsonSettings): string {
+        let json = toJSON(instance, settings);
+        return JSON.stringify(json, null, settings?.space);
+    }
+
+    export function parse <T = any> (str: string, settings?: JsonSettings): T {
+        let json = JSON.parse(str);
+        return fromJSON(json, settings) as T;
     }
 }
 
@@ -45,10 +63,10 @@ export const JsonConverters: IJsonConverter[] = [
         supports (val, type) {
             return type === Date || val instanceof Date;
         },
-        toJson (val: Date) {
+        toJSON (val: Date) {
             return val.toISOString();
         },
-        fromJson (val: string) {
+        fromJSON (val: string) {
             return new Date(val);
         }
     },
@@ -56,10 +74,10 @@ export const JsonConverters: IJsonConverter[] = [
         supports (val, type) {
             return type === RegExp || val instanceof RegExp;
         },
-        toJson (val: RegExp) {
+        toJSON (val: RegExp) {
             return val.toString();
         },
-        fromJson (val: string) {
+        fromJSON (val: string) {
             let pattern = val.substring(1, val.lastIndexOf('/'));
             let flags = val.substring(val.lastIndexOf('/') + 1);
             return new RegExp(pattern, flags);

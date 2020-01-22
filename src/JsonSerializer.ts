@@ -8,8 +8,8 @@ import { is_rawObject } from './utils/is';
 
 export namespace JsonSerializer {
     export function toJsonValue(val: any, info: PropertyInfo, settings: JsonSettings) {
-        if (info?.Converter?.toJson) {
-            return info.Converter.toJson(val, info, settings);
+        if (info?.Converter?.toJSON) {
+            return info.Converter.toJSON(val, info, settings);
         }
         if (Types.isValueType(val)) {
             return val;
@@ -31,10 +31,10 @@ export namespace JsonSerializer {
         let type = info && info.Type || val.constructor;
         let converter = JsonConverters.find(x => x.supports(val, type));
         if (converter) {
-            return converter.toJson(val, info, settings);
+            return converter.toJSON(val, info, settings);
         }
         if (JsonUtils.hasModelMeta(val)) {
-            return JsonConvert.toJson(val, settings);
+            return JsonConvert.toJSON(val, settings);
         }
         return val;
     }

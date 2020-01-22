@@ -53,10 +53,10 @@ export namespace Json {
         return function (target, propertyKey, descriptor?) {
             let meta = JsonUtils.resolvePropertyMeta(target, propertyKey);
             meta.Converter = <IJsonConverter>{
-                toJson(value) {
+                toJSON(value) {
                     return JSON.stringify(value);
                 },
-                fromJson(str) {
+                fromJSON(str) {
                     return JSON.parse(str);
                 }
             };

@@ -38,7 +38,11 @@ declare module 'class-json/JsonConvert' {
     import { IJsonConverter } from 'class-json/IJsonConverter';
     export namespace JsonConvert {
         function toJson(model: any, settings?: JsonSettings): any;
-        function fromJson<T>(json: any, settings?: JsonSettings): any;
+        function toJSON(model: any, settings?: JsonSettings): any;
+        function fromJson(model: any, settings?: JsonSettings): any;
+        function fromJSON<T>(json: any, settings?: JsonSettings): any;
+        function stringify(instance: any, settings?: JsonSettings): string;
+        function parse<T = any>(str: string, settings?: JsonSettings): T;
     }
     export const JsonConverters: IJsonConverter[];
 }
@@ -49,7 +53,8 @@ declare module 'class-json/JsonValidate' {
         Type?: new (...args: any[]) => T;
     }
     export namespace JsonValidate {
-        function validate(model: any, settings?: IValidationSettings): IRuleError[];
+        function validate<T>(model: T, settings?: IValidationSettings): IRuleError[];
+        function validateProperty<T>(model: T, key: keyof T, settings?: IValidationSettings): IRuleError[];
     }
 }
 
@@ -59,8 +64,8 @@ declare module 'class-json/Serializable' {
     import { IValidationSettings } from 'class-json/JsonValidate';
     export class Serializable<T> {
             constructor(partial?: Partial<T>);
-            static fromJson(json: any, settings?: JsonSettings): any;
-            static fromJSON(json: any, settings?: JsonSettings): any;
+            static fromJson<T extends typeof Serializable>(this: T, json: any, settings?: JsonSettings): InstanceType<T>;
+            static fromJSON<T extends typeof Serializable>(this: T, json: any, settings?: JsonSettings): InstanceType<T>;
             static validate(x: any, settings?: IValidationSettings): IRuleError<any>[];
             toJson(settings?: JsonSettings): any;
             toJSON(settings?: JsonSettings): any;
@@ -72,6 +77,7 @@ declare module 'class-json/JsonSettings' {
     export interface JsonSettings {
         propertyResolver?: 'camelCase' | 'underScore';
         Type?: new (...args: any[]) => any;
+        space?: number | string;
     }
 }
 
@@ -82,7 +88,7 @@ declare module 'class-json/JsonUtils' {
     export namespace JsonUtils {
         const META_KEY = "__json__";
         function resolveModelMeta<TAdditional = void>(mix: object | Function): ModelInfo & TAdditional;
-        function pickModelMeta<TAdditional = void>(mix: object | Function): ModelInfo & TAdditional;
+        function pickModelMeta<TAdditional = void>(mix: any | Function): ModelInfo & TAdditional;
         function hasModelMeta(mix: object | Function): boolean;
         function pickPropertyMeta<TAdditional = void>(target: object | Function, propertyKey: string): PropertyInfo & TAdditional;
         function resolvePropertyMeta<TAdditional = void>(target: object | Function, propertyKey: string): PropertyInfo & TAdditional;
@@ -96,8 +102,8 @@ declare module 'class-json/IJsonConverter' {
     import { PropertyInfo } from "class-json/PropertyInfo";
     export interface IJsonConverter {
         supports(val: any, type?: Function): boolean;
-        fromJson(jsonValue: any, info?: PropertyInfo, settings?: JsonSettings): any;
-        toJson(instanceValue: any, info?: PropertyInfo, settings?: JsonSettings): any;
+        fromJSON(jsonValue: any, info?: PropertyInfo, settings?: JsonSettings): any;
+        toJSON(instanceValue: any, info?: PropertyInfo, settings?: JsonSettings): any;
     }
 }
 

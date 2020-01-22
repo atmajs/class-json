@@ -18,7 +18,7 @@ export namespace JsonUtils {
         }
         return meta;
     }
-    export function pickModelMeta <TAdditional = void> (mix: object | Function): ModelInfo & TAdditional {
+    export function pickModelMeta <TAdditional = void> (mix: any | Function): ModelInfo & TAdditional {
         if (mix == null) {
             return null;
         }

@@ -28,10 +28,10 @@ UTest({
 
         f.foo = 'lorem';
 
-        let json = JsonConvert.toJson(f);
+        let json = JsonConvert.toJSON(f);
         deepEq_(json, { bar: 'lorem' });
 
-        let f2 = JsonConvert.fromJson <Foo> (json, { Type: Foo });
+        let f2 = JsonConvert.fromJSON <Foo> (json, { Type: Foo });
         deepEq_(f2, { foo: 'lorem' });
         eq_(f2.toString(), 'lorem');
     },
@@ -56,7 +56,7 @@ UTest({
 
     'support raw objects' () {
         let model = { number: Math.random() };
-        let json = JsonConvert.toJson(model);
+        let json = JsonConvert.toJSON(model);
         deepEq_(model, json);
     },
 
@@ -70,5 +70,25 @@ UTest({
 
         eq_(new Foo({}).name, 'foo');
         eq_(new Foo({ name: 'bar' }).name, 'bar');
+    },
+
+    'should support JSON serialization of a property' () {
+        class Product {
+            id: number
+        }
+        
+        class Order {
+            user: string
+
+            @Json.stringify()
+            products: Product[]
+        }
+        let json = {
+            user: 'foo',
+            products: JSON.stringify([{id: 5}])
+        };
+
+        let order = JsonConvert.fromJSON(json, { Type: Order });
+        eq_(order.products[0].id, 5);
     }
 })

@@ -20,14 +20,14 @@ export class Serializable<T> {
             }
         }
     }
-    static fromJson(json, settings: JsonSettings = { Type: null }) {
+    static fromJson<T extends typeof Serializable>(this: T, json, settings: JsonSettings = { Type: null }): InstanceType<T> {
         console.warn('Obsolete (fromJson) - use fromJSON instead');
-        return this.fromJSON(settings);
+        return this.fromJSON(json, settings);
     }
 
-    static fromJSON(json, settings: JsonSettings = { Type: null }) {
+    static fromJSON<T extends typeof Serializable>(this: T, json, settings: JsonSettings = { Type: null }): InstanceType<T> {
         settings.Type = settings.Type ?? this;
-        return JsonConvert.fromJson(json, settings);
+        return JsonConvert.fromJSON(json, settings);
     }
 
     static validate (x, settings: IValidationSettings = {}) {
@@ -41,7 +41,7 @@ export class Serializable<T> {
         return this.toJSON(settings);
     }
     toJSON(settings?: JsonSettings) {
-        return JsonConvert.toJson(this, settings);
+        return JsonConvert.toJSON(this, settings);
     }
     assign (partial?: Partial<T>): this {
         Object.assign(this, partial);
