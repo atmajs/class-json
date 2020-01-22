@@ -52,12 +52,18 @@ export namespace Json {
     export function stringify() {
         return function (target, propertyKey, descriptor?) {
             let meta = JsonUtils.resolvePropertyMeta(target, propertyKey);
-            meta.Converter = <IJsonConverter>{
-                toJSON(value) {
+            meta.Converter = <IJsonConverter> {
+                toJSON(mix: string | any) {
+                    if (typeof mix === 'string') {
+                        return mix;
+                    }
                     return JSON.stringify(value);
                 },
-                fromJSON(str) {
-                    return JSON.parse(str);
+                fromJSON(mix: string | any) {
+                    if (typeof mix !== 'string') {
+                        return mix;
+                    }
+                    return JSON.parse(mix);
                 }
             };
             return descriptor;
