@@ -1,5 +1,6 @@
 import { IJsonConverter } from './IJsonConverter';
 import { JsonUtils } from "./JsonUtils";
+import { IConstructor } from './JsonSettings';
 
 export namespace Json {
     export function ignore() {
@@ -16,7 +17,7 @@ export namespace Json {
             return descriptor;
         };
     }
-    export function type(Ctor: Function, options?) {
+    export function type(Ctor: IConstructor, options?) {
         return function (target, propertyKey, descriptor?) {
             var viaProperty = descriptor == null;
             let meta = JsonUtils.resolvePropertyMeta(target, propertyKey);
@@ -25,7 +26,7 @@ export namespace Json {
             return descriptor;
         };
     }
-    export function array(Ctor: Function, options?) {
+    export function array(Ctor: IConstructor, options?) {
         return function (target, propertyKey, descriptor?) {
             let meta = JsonUtils.resolvePropertyMeta(target, propertyKey);
             meta.ArrayType = Ctor;

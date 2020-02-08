@@ -34,7 +34,14 @@ export namespace JsonUtils {
         if (mix == null) {
             return null;
         }
-        return mix[META_KEY] || (typeof mix === 'function' && mix.prototype[META_KEY]) || null;
+        let isFn = typeof mix === 'function';
+        if (isFn && mix === Object) {
+            return null;
+        }
+        if (isFn) {
+            return mix.prototype[META_KEY] || null;
+        }
+        return mix[META_KEY] || null;
     }
     export function hasModelMeta(mix: object | Function): boolean {
         return pickModelMeta(mix) != null;

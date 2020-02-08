@@ -1,4 +1,4 @@
-import { JsonSettings } from './JsonSettings';
+import { JsonSettings, IType } from './JsonSettings';
 import { JsonConvert } from './JsonConvert';
 import { JsonValidate, IValidationSettings } from './JsonValidate';
 import { JsonUtils } from './JsonUtils';
@@ -20,12 +20,12 @@ export class Serializable<T> {
             }
         }
     }
-    static fromJson<T extends typeof Serializable>(this: T, json, settings: JsonSettings = { Type: null }): InstanceType<T> {
+    static fromJson<T extends typeof Serializable>(this: T, json, settings: JsonSettings & IType = { Type: null }): InstanceType<T> {
         console.warn('Obsolete (fromJson) - use fromJSON instead');
         return this.fromJSON(json, settings);
     }
 
-    static fromJSON<T extends typeof Serializable>(this: T, json, settings: JsonSettings = { Type: null }): InstanceType<T> {
+    static fromJSON<T extends typeof Serializable>(this: T, json, settings: JsonSettings & IType = { Type: null }): InstanceType<T> {
         settings.Type = settings.Type ?? this;
         return JsonConvert.fromJSON(json, settings);
     }

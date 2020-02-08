@@ -90,5 +90,35 @@ UTest({
 
         let order = JsonConvert.fromJSON(json, { Type: Order });
         eq_(order.products[0].id, 5);
+    },
+    'should ignore properties' () {
+        let root = {
+            name: 'root',
+            parent: '<none>',
+            categories: [], 
+        };
+        let foo = {
+            name: 'foo',
+            parent: root
+        };
+        let bar = {
+            name: 'bar',
+            parent: root
+        };
+        root.categories = [ foo, bar ];
+
+        class Meta {
+                
+            @Json.ignore()
+            parent
+
+            @Json.array(Meta)
+            categories
+        }
+
+        let json = JsonConvert.toJSON(root, { Type: Meta });
+        eq_(json.parent, null);
+        eq_(json.categories[0].parent, null);
+        eq_(json.categories[1].parent, null);
     }
 })

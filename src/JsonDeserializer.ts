@@ -48,12 +48,12 @@ export namespace JsonDeserializer {
     }
     export function resolveValue(val: any, info: PropertyInfo, settings: JsonSettings) {
         if (info?.Converter?.fromJSON) {
-            return info.Converter.fromJSON(val, info, settings);
+            return info.Converter.fromJSON(val, settings);
         }
         if (info?.Type) {
             let converter = JsonConverters.find(x => x.supports(val, info.Type));
             if (converter) {
-                return converter.fromJSON(val, info, settings);
+                return converter.fromJSON(val, settings);
             }
             let meta = JsonUtils.pickModelMeta(info.Type);
             if (meta) {

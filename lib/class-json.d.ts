@@ -12,11 +12,12 @@ declare module 'class-json' {
 
 declare module 'class-json/Json' {
     import { IJsonConverter } from 'class-json/IJsonConverter';
+    import { IConstructor } from 'class-json/JsonSettings';
     export namespace Json {
         function ignore(): (target: any, propertyKey: any, descriptor?: any) => any;
         function name(name: any): (target: any, propertyKey: any, descriptor?: any) => any;
-        function type(Ctor: Function, options?: any): (target: any, propertyKey: any, descriptor?: any) => any;
-        function array(Ctor: Function, options?: any): (target: any, propertyKey: any, descriptor?: any) => any;
+        function type(Ctor: IConstructor, options?: any): (target: any, propertyKey: any, descriptor?: any) => any;
+        function array(Ctor: IConstructor, options?: any): (target: any, propertyKey: any, descriptor?: any) => any;
         function value(mix: any): (target: any, propertyKey: any, descriptor?: any) => any;
         function converter(Converter: Partial<IJsonConverter>): (target: any, propertyKey: any, descriptor?: any) => any;
         function stringify(): (target: any, propertyKey: any, descriptor?: any) => any;
@@ -34,13 +35,13 @@ declare module 'class-json/validation/Rule' {
 }
 
 declare module 'class-json/JsonConvert' {
-    import { JsonSettings } from 'class-json/JsonSettings';
+    import { JsonSettings, IType } from 'class-json/JsonSettings';
     import { IJsonConverter } from 'class-json/IJsonConverter';
     export namespace JsonConvert {
         function toJson(model: any, settings?: JsonSettings): any;
-        function toJSON(model: any, settings?: JsonSettings): any;
+        function toJSON(model: any, settings?: JsonSettings & IType): any;
         function fromJson(model: any, settings?: JsonSettings): any;
-        function fromJSON<T>(json: any, settings?: JsonSettings): any;
+        function fromJSON<T>(json: any, settings?: JsonSettings & IType): any;
         function stringify(instance: any, settings?: JsonSettings): string;
         function parse<T = any>(str: string, settings?: JsonSettings): T;
     }
@@ -60,12 +61,12 @@ declare module 'class-json/JsonValidate' {
 
 declare module 'class-json/Serializable' {
     import { IRuleError } from 'class-json/validation/IRule'; 
-     import { JsonSettings } from 'class-json/JsonSettings';
+     import { JsonSettings, IType } from 'class-json/JsonSettings';
     import { IValidationSettings } from 'class-json/JsonValidate';
     export class Serializable<T> {
             constructor(partial?: Partial<T>);
-            static fromJson<T extends typeof Serializable>(this: T, json: any, settings?: JsonSettings): InstanceType<T>;
-            static fromJSON<T extends typeof Serializable>(this: T, json: any, settings?: JsonSettings): InstanceType<T>;
+            static fromJson<T extends typeof Serializable>(this: T, json: any, settings?: JsonSettings & IType): InstanceType<T>;
+            static fromJSON<T extends typeof Serializable>(this: T, json: any, settings?: JsonSettings & IType): InstanceType<T>;
             static validate(x: any, settings?: IValidationSettings): IRuleError<any>[];
             toJson(settings?: JsonSettings): any;
             toJSON(settings?: JsonSettings): any;
@@ -76,8 +77,13 @@ declare module 'class-json/Serializable' {
 declare module 'class-json/JsonSettings' {
     export interface JsonSettings {
         propertyResolver?: 'camelCase' | 'underScore';
-        Type?: new (...args: any[]) => any;
         space?: number | string;
+    }
+    export interface IType {
+        Type?: IConstructor;
+    }
+    export interface IConstructor {
+        new (...args: any[]): any;
     }
 }
 
@@ -99,11 +105,10 @@ declare module 'class-json/JsonUtils' {
 
 declare module 'class-json/IJsonConverter' {
     import { JsonSettings } from 'class-json/JsonSettings';
-    import { PropertyInfo } from "class-json/PropertyInfo";
     export interface IJsonConverter {
         supports(val: any, type?: Function): boolean;
-        fromJSON(jsonValue: any, info?: PropertyInfo, settings?: JsonSettings): any;
-        toJSON(instanceValue: any, info?: PropertyInfo, settings?: JsonSettings): any;
+        fromJSON(jsonValue: any, settings?: JsonSettings): any;
+        toJSON(instanceValue: any, settings?: JsonSettings): any;
     }
 }
 
@@ -135,12 +140,13 @@ declare module 'class-json/ModelInfo' {
 declare module 'class-json/PropertyInfo' {
     import { IJsonConverter } from 'class-json/IJsonConverter';
     import { IRule } from 'class-json/validation/IRule';
+    import { IConstructor } from 'class-json/JsonSettings';
     export interface PropertyInfo {
         property?: string;
         jsonIgnore?: boolean;
         jsonName?: string;
-        Type?: Function;
-        ArrayType?: Function;
+        Type?: IConstructor;
+        ArrayType?: IConstructor;
         MapType?: Function;
         Converter?: Partial<IJsonConverter>;
         rules?: IRule[];

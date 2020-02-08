@@ -1,4 +1,4 @@
-import { JsonSettings } from './JsonSettings';
+import { JsonSettings, IType } from './JsonSettings';
 import { IJsonConverter } from './IJsonConverter';
 import { JsonUtils } from './JsonUtils';
 import { Types } from './Types';
@@ -12,33 +12,18 @@ export namespace JsonConvert {
         console.warn('Obsolete (static toJson) - use toJSON instead');
         return toJSON(model, settings);
     }
-    export function toJSON (model, settings?: JsonSettings) {
+    export function toJSON (model, settings?: JsonSettings & IType) {
         if (Types.isArray(model)) {
             return model.map(x => toJSON(x, settings));
         }
-        let meta = JsonUtils.pickModelMeta(model) ?? JsonUtils.pickModelMeta(settings?.Type);
-        let json = Object.create(null);
-       
-        for (let key in model) {
-            let propertyInfo = meta?.properties[key];
-            if (propertyInfo != null && propertyInfo.jsonIgnore) {
-                continue;
-            }
-            let modelVal = model[key];
-            if (typeof modelVal === 'function') {
-                continue;
-            }
-            let property = JsonSerializer.toJsonName(key, propertyInfo, settings);
-            let val = JsonSerializer.toJsonValue(modelVal, propertyInfo, settings);
-            json[property] = val;
-        }
-        return json;
+
+        return JsonSerializer.serializeObject(model, settings?.Type, settings);
     }
     export function fromJson (model, settings?: JsonSettings) {
         console.warn('Obsolete (static toJson) - use toJSON instead');
         return toJSON(model, settings);
     }
-    export function  fromJSON <T> (json, settings?: JsonSettings) {
+    export function  fromJSON <T> (json, settings?: JsonSettings & IType) {
         if (Types.isArray(json)) {
             return json.map(x => fromJSON(x, settings));
         }
