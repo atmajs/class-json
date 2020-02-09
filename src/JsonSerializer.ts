@@ -57,7 +57,7 @@ export namespace JsonSerializer {
             let arr = new Array(val.length);
             
             for (let i = 0; i < val.length; i++) {
-                arr[i] = serializeObject(val[i], info.ArrayType, settings);
+                arr[i] = serializeObject(val[i], info?.ArrayType, settings);
             }
             return arr;
         }
