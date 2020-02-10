@@ -120,5 +120,23 @@ UTest({
         eq_(json.parent, null);
         eq_(json.categories[0].parent, null);
         eq_(json.categories[1].parent, null);
+    },
+    'should serialize simple json' (){
+        let model = {
+            f: 1,
+            arr: ['hello']
+        };
+        let json = JsonConvert.toJSON(model);
+        deepEq_(json.arr, ['hello']);
+
+        class Model extends Serializable<Model> {
+            f: number
+            arr: string[]
+        }
+        let instance = new Model(model);
+        let json2 = instance.toJSON();
+        deepEq_(json2, model);
+        console.log(json2);
+        eq_(json2.arr[0], 'hello');
     }
 })

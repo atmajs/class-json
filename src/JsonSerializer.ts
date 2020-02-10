@@ -27,6 +27,10 @@ export namespace JsonSerializer {
     // }
 
     export function serializeObject(model: any, Type: IConstructor, settings: JsonSettings) {
+        if (Types.isValueType(model)) {
+            return model;
+        }
+        
         let meta = JsonUtils.pickModelMeta(model) ?? JsonUtils.pickModelMeta(Type);
         let json = Object.create(null);
        
@@ -78,6 +82,7 @@ export namespace JsonSerializer {
         }
         return val;
     }
+    
     export function toJsonName(key: string, info: PropertyInfo, settings: JsonSettings) {
         if (info?.jsonName != null) {
             return info.jsonName;
