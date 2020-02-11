@@ -5,7 +5,7 @@
         "name": "Alexander Kit",
         "email": "alex.kit@atmajs.com"
     },
-    "version": "0.2.80",
+    "version": "0.2.81",
     "main": "./lib/class-json.js",
     "types": "./lib/class-json.d.ts",
     "repository": {
@@ -14,7 +14,7 @@
     },
     "devDependencies": {
         "@types/sinon": "^2.3.3",
-        "app-bundler": "0.0.75",
+        "app-bundler": "0.0.82",
         "atma": "^0.12.14",
         "atma-loader-ts": "^1.1.12",
         "dts-bundle": "^0.7.3"
