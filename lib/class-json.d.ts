@@ -51,6 +51,7 @@ declare module 'class-json/JsonConvert' {
 declare module 'class-json/JsonValidate' {
     import { IRuleError } from 'class-json/validation/IRule';
     export interface IValidationSettings<T = any> {
+        mustValidate?: boolean;
         Type?: new (...args: any[]) => T;
     }
     export namespace JsonValidate {

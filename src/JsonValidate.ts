@@ -5,6 +5,7 @@ import { Types } from './Types';
 import { PropertyInfo } from './PropertyInfo';
 
 export interface IValidationSettings<T = any> {
+    mustValidate?: boolean
     Type?: new (...args) => T
 }
 
@@ -13,9 +14,12 @@ export namespace JsonValidate {
     export function validate <T> (model: T, settings?: IValidationSettings): IRuleError[] {
         let meta = JsonUtils.pickModelMeta(model) ?? JsonUtils.pickModelMeta(settings?.Type);
         if (meta == null) {
-            return <IRuleError[]> [
-                { message: 'Object has not validation meta information' }
-            ];
+            if (settings?.mustValidate === true) {
+                return <IRuleError[]> [
+                    { message: 'Object has not validation meta information' }
+                ];
+            }
+            return EMPTY;
         }
         let errors = validateByMeta(model, model, meta, '');
         return errors ?? EMPTY;
@@ -23,9 +27,12 @@ export namespace JsonValidate {
     export function validateProperty <T> (model: T, key: keyof T, settings?: IValidationSettings): IRuleError[] {
         let meta = JsonUtils.pickModelMeta(model) ?? JsonUtils.pickModelMeta(settings?.Type);
         if (meta == null) {
-            return <IRuleError[]> [
-                { message: 'Object has not validation meta information' }
-            ];
+            if (settings?.mustValidate === true) {
+                return <IRuleError[]> [
+                    { message: 'Object has not validation meta information' }
+                ];
+            }
+            return EMPTY;
         }
         let val = model[key];
         let propInfo = meta.properties[key];
