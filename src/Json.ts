@@ -58,7 +58,7 @@ export namespace Json {
                     if (typeof mix === 'string') {
                         return mix;
                     }
-                    return JSON.stringify(value);
+                    return JSON.stringify(mix);
                 },
                 fromJSON(mix: string | any) {
                     if (typeof mix !== 'string') {
