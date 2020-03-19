@@ -27,23 +27,14 @@ export namespace JsonDeserializer {
         return model;
     }
     export function fromJsonToModel(json, meta: ModelInfo, settings: JsonSettings) {
-        var nameMappings = Object.create(null) as {
-            [jsonKey: string]: PropertyInfo;
-        };
-        if (meta) {
-            for (let prop in meta.properties) {
-                if (meta.properties[prop].jsonName) {
-                    nameMappings[meta.properties[prop].jsonName] = meta.properties[prop];
-                }
-            }
-        }
         var model = Object.create(null);
         for (let key in json) {
-            let property = resolveName(key, nameMappings, meta, settings);
+            let property = resolveName(key, meta.nameMappings, meta, settings);
             let info = meta?.properties[property];
             let value = resolveValue(json[key], info, settings);
             model[property] = value;
         }
+        
         return model;
     }
     export function resolveValue(val: any, info: PropertyInfo, settings: JsonSettings) {
@@ -83,8 +74,9 @@ export namespace JsonDeserializer {
     export function resolveName(key: string, mappings: {
         [jsonKey: string]: PropertyInfo;
     }, meta: ModelInfo, settings: JsonSettings) {
-        let info = mappings[key];
-        if (info) {
+        
+        let info = mappings?.[key];
+        if (info != null) {
             return info.property;
         }
         return JsonSerializer.toJsonName(key, info, settings);

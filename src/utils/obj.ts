@@ -20,3 +20,15 @@ export function obj_clone <T> (source: T): T {
     }
     return source;
 }
+
+export function obj_getKeys (x): string[] {
+    let keys = [];
+    let proto = x;
+    while (proto != null && proto != Object.prototype) {
+        keys.push(
+            ...Object.getOwnPropertyNames(proto)
+        );
+        proto = Object.getPrototypeOf(proto);
+    }
+    return keys;
+}

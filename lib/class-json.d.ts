@@ -8,6 +8,7 @@ declare module 'class-json' {
     export { Serializable } from 'class-json/Serializable';
     export { JsonSettings } from 'class-json/JsonSettings';
     export { JsonUtils } from 'class-json/JsonUtils';
+    export { JsonSchema } from 'class-json/JsonSchema';
 }
 
 declare module 'class-json/Json' {
@@ -17,6 +18,7 @@ declare module 'class-json/Json' {
         function ignore(): (target: any, propertyKey: any, descriptor?: any) => any;
         function name(name: any): (target: any, propertyKey: any, descriptor?: any) => any;
         function type(Ctor: IConstructor, options?: any): (target: any, propertyKey: any, descriptor?: any) => any;
+        function defaultValue(val: any): (target: any, propertyKey: any, descriptor?: any) => any;
         function array(Ctor: IConstructor, options?: any): (target: any, propertyKey: any, descriptor?: any) => any;
         function value(mix: any): (target: any, propertyKey: any, descriptor?: any) => any;
         function converter(Converter: Partial<IJsonConverter>): (target: any, propertyKey: any, descriptor?: any) => any;
@@ -29,7 +31,10 @@ declare module 'class-json/validation/Rule' {
         function required(): (target: any, propertyKey: any, descriptor?: any) => any;
         function minLength(count: number): (target: any, propertyKey: any, descriptor?: any) => any;
         function maxLength(count: number): (target: any, propertyKey: any, descriptor?: any) => any;
+        function minimum(val: number): (target: any, propertyKey: any, descriptor?: any) => any;
+        function maximum(val: number): (target: any, propertyKey: any, descriptor?: any) => any;
         function pattern(pattern: string | RegExp): (target: any, propertyKey: any, descriptor?: any) => any;
+        function stringEnum(values: string[]): (target: any, propertyKey: any, descriptor?: any) => any;
         function validate(fn: (val: any, root: any) => string, name?: string): (target: any, propertyKey: any, descriptor?: any) => any;
     }
 }
@@ -104,6 +109,42 @@ declare module 'class-json/JsonUtils' {
     }
 }
 
+declare module 'class-json/JsonSchema' {
+    export interface IJsonSchemaBase {
+        type: 'string' | 'number' | 'integer' | 'boolean' | 'object' | 'array' | 'any';
+        title?: string;
+        description?: string;
+        default?: any;
+        validation?: any;
+    }
+    export interface IJsonSchemaString {
+        pattern?: string;
+        format?: 'date-time' | 'time' | 'date' | 'email' | 'ipv4' | 'ipv6' | 'regex' | 'uri';
+        enum?: (string | number)[];
+        minLength?: number;
+        maxLength?: number;
+    }
+    export interface IJsonSchemaNumber {
+        minimum?: number;
+        maximum?: number;
+    }
+    export interface IJsonSchemaBoolean {
+    }
+    export interface IJsonSchemaObject {
+        properties?: {
+            [key: string]: ISchema;
+        };
+        required?: string[];
+    }
+    export interface IJsonSchemaArray {
+        items?: ISchema;
+    }
+    export type ISchema = IJsonSchemaBase & IJsonSchemaString & IJsonSchemaNumber & IJsonSchemaBoolean & IJsonSchemaObject & IJsonSchemaArray;
+    export namespace JsonSchema {
+        function getSchema(Type: any, schema?: Partial<ISchema>): ISchema;
+    }
+}
+
 declare module 'class-json/IJsonConverter' {
     import { JsonSettings } from 'class-json/JsonSettings';
     export interface IJsonConverter {
@@ -129,6 +170,9 @@ declare module 'class-json/ModelInfo' {
     import { PropertyInfo } from 'class-json/PropertyInfo';
     export interface ModelInfo<T = any> {
         Type: new (...args: any[]) => T;
+        nameMappings: {
+            [jsonKey: string]: PropertyInfo;
+        };
         properties: {
             [name in keyof T]: PropertyInfo;
         };
@@ -151,6 +195,7 @@ declare module 'class-json/PropertyInfo' {
         MapType?: Function;
         Converter?: Partial<IJsonConverter>;
         rules?: IRule[];
+        default?: any;
         options?: any;
     }
 }

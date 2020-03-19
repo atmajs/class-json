@@ -12,8 +12,13 @@ export namespace Json {
     }
     export function name(name) {
         return function (target, propertyKey, descriptor?) {
-            let meta = JsonUtils.resolvePropertyMeta(target, propertyKey);
-            meta.jsonName = name;
+            let metaObj = JsonUtils.resolveModelMeta(target);
+            if (metaObj.nameMappings == null) {
+                metaObj.nameMappings = {}
+            }
+            let metaProp = JsonUtils.resolvePropertyMeta(target, propertyKey);
+            metaProp.jsonName = name;
+            metaObj.nameMappings[name] = metaProp;
             return descriptor;
         };
     }
@@ -23,6 +28,13 @@ export namespace Json {
             let meta = JsonUtils.resolvePropertyMeta(target, propertyKey);
             meta.Type = Ctor;
             meta.options = options;
+            return descriptor;
+        };
+    }
+    export function defaultValue (val: any) {
+        return function (target, propertyKey, descriptor?) {
+            let meta = JsonUtils.resolvePropertyMeta(target, propertyKey);
+            meta.default = value;
             return descriptor;
         };
     }

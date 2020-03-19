@@ -10,5 +10,6 @@ export interface PropertyInfo {
     MapType?: Function;
     Converter?: Partial<IJsonConverter>;
     rules?: IRule[]
+    default?: any
     options?: any
 }

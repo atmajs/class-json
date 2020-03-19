@@ -136,7 +136,6 @@ UTest({
         let instance = new Model(model);
         let json2 = instance.toJSON();
         deepEq_(json2, model);
-        console.log(json2);
         eq_(json2.arr[0], 'hello');
     }
 })
