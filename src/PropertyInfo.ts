@@ -2,6 +2,7 @@ import { IJsonConverter } from './IJsonConverter';
 import { IRule } from './validation/IRule';
 import { IConstructor } from './JsonSettings';
 export interface PropertyInfo {
+    description?: string
     property?: string;
     jsonIgnore?: boolean;
     jsonName?: string;

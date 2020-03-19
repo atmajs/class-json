@@ -4,6 +4,8 @@ import { Rule } from '../src/validation/Rule';
 
 UTest({
     'should extract simple schema' () {
+
+        @Json.description('SomeFoo')
         class Foo {
             @Json.type(String)
             @Rule.required()
@@ -14,12 +16,14 @@ UTest({
             created: Date
 
             @Json.array(Number)
+            @Json.description('SomeNums')
             numbers: number[]
         }
 
         const schema = JsonSchema.getSchema(Foo);
         deepEq_(schema, {
             type: 'object',
+            description: 'SomeFoo',
             required: [
                 'name'
             ],
@@ -34,6 +38,7 @@ UTest({
                 },
                 numbers: {
                     type: 'array',
+                    description: 'SomeNums',
                     items: {
                         type: 'number'
                     }

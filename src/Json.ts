@@ -31,13 +31,6 @@ export namespace Json {
             return descriptor;
         };
     }
-    export function defaultValue (val: any) {
-        return function (target, propertyKey, descriptor?) {
-            let meta = JsonUtils.resolvePropertyMeta(target, propertyKey);
-            meta.default = value;
-            return descriptor;
-        };
-    }
     export function array(Ctor: IConstructor, options?) {
         return function (target, propertyKey, descriptor?) {
             let meta = JsonUtils.resolvePropertyMeta(target, propertyKey);
@@ -47,11 +40,17 @@ export namespace Json {
         };
     }
     export function value (mix: any) {
+        console.log('Obsolete: renamed .defaultValue');
+        return defaultValue(mix);
+    }
+    export function defaultValue (mix: any) {
         return function (target, propertyKey, descriptor?) {
-            let meta = JsonUtils.resolveModelMeta(target);
-            let defs = meta.defaults ?? (meta.defaults = {});
-            
+            let metaModel = JsonUtils.resolveModelMeta(target);
+            let defs = metaModel.defaults ?? (metaModel.defaults = {});
             defs[propertyKey] = mix;
+
+            let metaProp = JsonUtils.resolvePropertyMeta(target, propertyKey);
+            metaProp.default = value;
             return descriptor;
         };
     }
@@ -59,6 +58,18 @@ export namespace Json {
         return function (target, propertyKey, descriptor?) {
             let meta = JsonUtils.resolvePropertyMeta(target, propertyKey);
             meta.Converter = Converter;
+            return descriptor;
+        };
+    }
+    export function description(text: string) {
+        return function (target, propertyKey?, descriptor?) {
+            if (propertyKey == null) {
+                let metaModel = JsonUtils.resolveModelMeta(target);
+                metaModel.description = text;
+                return;
+            }
+            let metaProp = JsonUtils.resolvePropertyMeta(target, propertyKey);
+            metaProp.description = text;
             return descriptor;
         };
     }

@@ -18,10 +18,11 @@ declare module 'class-json/Json' {
         function ignore(): (target: any, propertyKey: any, descriptor?: any) => any;
         function name(name: any): (target: any, propertyKey: any, descriptor?: any) => any;
         function type(Ctor: IConstructor, options?: any): (target: any, propertyKey: any, descriptor?: any) => any;
-        function defaultValue(val: any): (target: any, propertyKey: any, descriptor?: any) => any;
         function array(Ctor: IConstructor, options?: any): (target: any, propertyKey: any, descriptor?: any) => any;
         function value(mix: any): (target: any, propertyKey: any, descriptor?: any) => any;
+        function defaultValue(mix: any): (target: any, propertyKey: any, descriptor?: any) => any;
         function converter(Converter: Partial<IJsonConverter>): (target: any, propertyKey: any, descriptor?: any) => any;
+        function description(text: string): (target: any, propertyKey?: any, descriptor?: any) => any;
         function stringify(): (target: any, propertyKey: any, descriptor?: any) => any;
     }
 }
@@ -169,6 +170,7 @@ declare module 'class-json/validation/IRule' {
 declare module 'class-json/ModelInfo' {
     import { PropertyInfo } from 'class-json/PropertyInfo';
     export interface ModelInfo<T = any> {
+        description?: string;
         Type: new (...args: any[]) => T;
         nameMappings: {
             [jsonKey: string]: PropertyInfo;
@@ -187,6 +189,7 @@ declare module 'class-json/PropertyInfo' {
     import { IRule } from 'class-json/validation/IRule';
     import { IConstructor } from 'class-json/JsonSettings';
     export interface PropertyInfo {
+        description?: string;
         property?: string;
         jsonIgnore?: boolean;
         jsonName?: string;

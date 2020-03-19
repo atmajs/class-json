@@ -97,6 +97,9 @@ export namespace JsonSchema {
                 let props = object.properties;
                 if (propMeta.ArrayType) {
                     props[prop] = getSchema(propMeta.ArrayType, { type: 'array' });
+                    if (propMeta.description) {
+                        props[prop].description = propMeta.description;
+                    }
                     continue;
                 }
                 props[prop] = getSchema(propMeta?.Type, null);
@@ -140,7 +143,13 @@ export namespace JsonSchema {
                 if (propMeta.default != null) {
                     props[prop].default = propMeta.default;
                 }
+                if (propMeta.description) {
+                    props[prop].description = propMeta.description;
+                }
             }
+        }
+        if (meta?.description) {
+            object.description = meta.description;
         }
 
         let keys = obj_getKeys(Type.prototype);
