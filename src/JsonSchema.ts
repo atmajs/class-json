@@ -51,6 +51,11 @@ export type ISchema = IJsonSchemaBase
 
 export namespace JsonSchema {
     export function getSchema (Type, schema?: Partial<ISchema>): ISchema {
+        if (Type == null) {
+            return {
+                type: 'any'
+            };
+        }
         if (schema?.type === 'array') {
             return {
                 type: 'array',
@@ -155,12 +160,17 @@ export namespace JsonSchema {
         let keys = obj_getKeys(Type.prototype);
         for (let i = 0; i < keys.length; i++) {
             let key = keys[i];
-            if (key in object.properties || key === '__json__') {
+            if (key in object.properties 
+                || key === '__json__' 
+                || key === 'toJSON' 
+                || key === 'toJson') {
+                continue;
+            };
+            let val = Type.prototype[key];
+            if (typeof val === 'function') {
                 continue;
             }
-            object.properties[key] = {
-                type: 'any'
-            };
+            object.properties[key] = getSchema(val);
         }
         return object;
     }
