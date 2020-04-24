@@ -3,6 +3,7 @@ import { JsonUtils } from './JsonUtils';
 import { ModelInfo } from './ModelInfo';
 import { Types } from './Types';
 import { PropertyInfo } from './PropertyInfo';
+import { Required } from './validation/rules/Required';
 
 export interface IValidationSettings<T = any> {
     mustValidate?: boolean
@@ -11,11 +12,11 @@ export interface IValidationSettings<T = any> {
 
 const EMPTY = [];
 export namespace JsonValidate {
-    export function validate <T> (model: T, settings?: IValidationSettings): IRuleError[] {
+    export function validate<T>(model: T, settings?: IValidationSettings): IRuleError[] {
         let meta = JsonUtils.pickModelMeta(model) ?? JsonUtils.pickModelMeta(settings?.Type);
         if (meta == null) {
             if (settings?.mustValidate === true) {
-                return <IRuleError[]> [
+                return <IRuleError[]>[
                     { message: 'Object has not validation meta information' }
                 ];
             }
@@ -24,11 +25,11 @@ export namespace JsonValidate {
         let errors = validateByMeta(model, model, meta, '');
         return errors ?? EMPTY;
     }
-    export function validateProperty <T> (model: T, key: keyof T, settings?: IValidationSettings): IRuleError[] {
+    export function validateProperty<T>(model: T, key: keyof T, settings?: IValidationSettings): IRuleError[] {
         let meta = JsonUtils.pickModelMeta(model) ?? JsonUtils.pickModelMeta(settings?.Type);
         if (meta == null) {
             if (settings?.mustValidate === true) {
-                return <IRuleError[]> [
+                return <IRuleError[]>[
                     { message: 'Object has not validation meta information' }
                 ];
             }
@@ -40,7 +41,7 @@ export namespace JsonValidate {
         return errors ?? EMPTY;
     }
 
-    function validateByMeta (model: any, root, meta: ModelInfo, path: string): IRuleError[] {
+    function validateByMeta(model: any, root, meta: ModelInfo, path: string): IRuleError[] {
         if (meta == null) {
             return null;
         }
@@ -48,20 +49,32 @@ export namespace JsonValidate {
         for (let key in model) {
             let val = model[key];
             let propInfo = meta.properties[key];
-
-            let error = validateSingleValue(model, val,  root ?? model, key, propInfo, path);
+            let error = val == null 
+                ? checkOptional(model, root ?? model, key, propInfo, path)
+                : validateSingleValue(model, val, root ?? model, key, propInfo, path);
+            if (error) {
+                (result ?? (result = [])).push(...error);
+            }
+        }
+        for (let key in meta.properties) {
+            if (key in model) {
+                // was handled
+                continue;
+            }
+            let propInfo = meta.properties[key];
+            let error = checkOptional(model, root ?? model, key, propInfo, path);
             if (error) {
                 (result ?? (result = [])).push(...error);
             }
         }
         return result;
     }
-    function validateSingleValue  (
-        model: any, 
-        val: any, 
-        root: any, 
+    function validateSingleValue(
+        model: any,
+        val: any,
+        root: any,
         key: string,
-        propInfo: PropertyInfo, 
+        propInfo: PropertyInfo,
         outerPath: string
     ): IRuleError[] {
         let result = null as IRuleError[];
@@ -105,7 +118,7 @@ export namespace JsonValidate {
         return result;
     }
 
-    function execRules (val: any, root: any, rules: IRule[], parentPath: string): IRuleError {
+    function execRules(val: any, root: any, rules: IRule[], parentPath: string): IRuleError {
         if (rules == null || rules.length === 0) {
             return null;
         }
@@ -119,5 +132,27 @@ export namespace JsonValidate {
             }
         }
         return null;
+    }
+
+    function checkOptional(
+        model: any,
+        root: any,
+        key: string,
+        propInfo: PropertyInfo,
+        outerPath: string
+    ) {
+        let rules = propInfo.rules;
+        if (rules == null || rules.length === 0) {
+            return null;
+        }
+        for (let rule of rules) {
+            if (rule instanceof Required) {
+                let error = rule.validate(null, root);
+                if (error) {
+                    error.property = outerPath ? `${outerPath}.${key}` : `${key}`;
+                    return [ error ]
+                }
+            }
+        }
     }
 }

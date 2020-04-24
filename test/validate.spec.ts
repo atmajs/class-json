@@ -62,6 +62,18 @@ UTest({
         let errors = JsonValidate.validate(foo);
         eq_(errors.length, 1);
         eq_(errors[0].name, 'Required');
+    },
+    'required' () {
+        class Foo {
+            
+            @Rule.required('What?')
+            foo: string
+        }
+
+        let foo = {};
+        let errors = JsonValidate.validate(foo, { Type: Foo });
+        eq_(errors.length, 1);
+        eq_(errors[0].message, 'What?');
     }
 });
 

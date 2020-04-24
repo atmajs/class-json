@@ -30,11 +30,19 @@ Comprehensive JSON library for a class.
 
     1.2 Validation
         
-        * `@Rule.required()`
-        * `@Rule.minLength(count: number)`
-        * `@Rule.maxLength(count: number)`
-        * `@Rule.pattern(rgx: RegExp)`
+        * `@Rule.required(message?)`
+        * `@Rule.minLength(count: number, message?)`
+        * `@Rule.maxLength(count: number, message?)`
+        * `@Rule.minimum(val: number, message?)`
+        * `@Rule.maximum(val: number, message?)`
+        * `@Rule.pattern(rgx: RegExp, message?)`
         * `@Rule.validate(validator: IValueValidator)`
+
+        Message Type:
+
+        * string
+        * string templates: `Interpolations: ~[value] ~[property] ~[model.foo]`
+        * Custom Function: `(value, model) => string`
         
 2. Classes
 

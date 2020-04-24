@@ -32,3 +32,20 @@ export function obj_getKeys (x): string[] {
     }
     return keys;
 }
+export function obj_getProperty (obj_: any, path: string) {
+    if (obj_ == null) {
+        return null;
+    }
+    if (path.indexOf('.') === -1) {
+        return obj_[path];
+    }
+    var obj = obj_,
+        chain = path.split('.'),
+        imax = chain.length,
+        i = -1;
+    while ( obj != null && ++i < imax ) {
+        let key = chain[i];
+        obj = obj[key];
+    }
+    return obj;
+};

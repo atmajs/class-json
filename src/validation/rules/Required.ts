@@ -8,7 +8,7 @@ export class Required extends RuleBase {
                 name: 'Required',
                 property: this.property,
                 value: null,
-                message: `${this.property} is not set`
+                message: this.formatMessage(null, root, `${this.property} is not set`)
             };
         }
     }

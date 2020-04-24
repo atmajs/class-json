@@ -28,14 +28,22 @@ declare module 'class-json/Json' {
 }
 
 declare module 'class-json/validation/Rule' {
+    import { IRuleInfo } from 'class-json/validation/RuleBase';
     export namespace Rule {
-        function required(): (target: any, propertyKey: any, descriptor?: any) => any;
-        function minLength(count: number): (target: any, propertyKey: any, descriptor?: any) => any;
-        function maxLength(count: number): (target: any, propertyKey: any, descriptor?: any) => any;
-        function minimum(val: number): (target: any, propertyKey: any, descriptor?: any) => any;
-        function maximum(val: number): (target: any, propertyKey: any, descriptor?: any) => any;
-        function pattern(pattern: string | RegExp): (target: any, propertyKey: any, descriptor?: any) => any;
-        function stringEnum(values: string[]): (target: any, propertyKey: any, descriptor?: any) => any;
+        function required(message?: string): any;
+        function required(opts?: IRuleInfo): any;
+        function minLength(count: number, message?: string): any;
+        function minLength(count: number, opts?: IRuleInfo): any;
+        function maxLength(count: number, message?: string): any;
+        function maxLength(count: number, opts?: IRuleInfo): any;
+        function minimum(val: number, message?: string): any;
+        function minimum(val: number, opts?: IRuleInfo): any;
+        function maximum(val: number, message?: string): any;
+        function maximum(val: number, opts?: IRuleInfo): any;
+        function pattern(pattern: string | RegExp, message?: string): any;
+        function pattern(pattern: string | RegExp, opts?: IRuleInfo): any;
+        function stringEnum(values: string[], message?: string): any;
+        function stringEnum(values: string[], opts?: IRuleInfo): any;
         function validate(fn: (val: any, root: any) => string, name?: string): (target: any, propertyKey: any, descriptor?: any) => any;
     }
 }
@@ -152,6 +160,23 @@ declare module 'class-json/IJsonConverter' {
         supports(val: any, type?: Function): boolean;
         fromJSON(jsonValue: any, settings?: JsonSettings): any;
         toJSON(instanceValue: any, settings?: JsonSettings): any;
+    }
+}
+
+declare module 'class-json/validation/RuleBase' {
+    import { IRule, IRuleError } from 'class-json/validation/IRule';
+    export type TRuleInfo = string | IRuleInfo;
+    export interface IRuleInfo {
+        message?: string | ((prop: string, value: any, model: any) => string);
+    }
+    export abstract class RuleBase<T = any> implements IRule<T> {
+        property: string;
+        opts: IRuleInfo;
+        constructor(property: string);
+        constructor(property: string, opts: IRuleInfo);
+        constructor(property: string, message: string);
+        abstract validate(value: any, root: any): IRuleError<T>;
+        formatMessage(value: any, root: any, $default: string): string;
     }
 }
 
