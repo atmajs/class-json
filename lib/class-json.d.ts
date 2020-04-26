@@ -78,8 +78,11 @@ declare module 'class-json/Serializable' {
     import { IRuleError } from 'class-json/validation/IRule'; 
      import { JsonSettings, IType } from 'class-json/JsonSettings';
     import { IValidationSettings } from 'class-json/JsonValidate';
+    type DeepPartial<T> = {
+            [key in keyof T]?: DeepPartial<T[key]>;
+    };
     export class Serializable<T> {
-            constructor(partial?: Partial<T>);
+            constructor(partial?: DeepPartial<T>);
             static fromJson<T extends typeof Serializable>(this: T, json: any, settings?: JsonSettings & IType): InstanceType<T>;
             static fromJSON<T extends typeof Serializable>(this: T, json: any, settings?: JsonSettings & IType): InstanceType<T>;
             static validate(x: any, settings?: IValidationSettings): IRuleError<any>[];
@@ -87,6 +90,7 @@ declare module 'class-json/Serializable' {
             toJSON(settings?: JsonSettings): any;
             assign(partial?: Partial<T>): this;
     }
+    export {};
 }
 
 declare module 'class-json/JsonSettings' {

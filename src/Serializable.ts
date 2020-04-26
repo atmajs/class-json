@@ -3,9 +3,14 @@ import { JsonConvert } from './JsonConvert';
 import { JsonValidate, IValidationSettings } from './JsonValidate';
 import { JsonUtils } from './JsonUtils';
 
+
+type DeepPartial<T> = {
+    [key in keyof T]?: DeepPartial<T[key]>
+}
+
 export class Serializable<T> {
 
-    constructor(partial?: Partial<T>) {
+    constructor(partial?: DeepPartial<T>) {
         if (partial != null) {
             for (let key in partial) {
                 (this as any)[key] = partial[key];
