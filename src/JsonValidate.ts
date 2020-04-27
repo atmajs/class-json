@@ -141,7 +141,7 @@ export namespace JsonValidate {
         propInfo: PropertyInfo,
         outerPath: string
     ) {
-        let rules = propInfo.rules;
+        let rules = propInfo?.rules;
         if (rules == null || rules.length === 0) {
             return null;
         }
