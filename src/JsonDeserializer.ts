@@ -6,6 +6,8 @@ import { Types } from './Types';
 import { JsonConverters } from './JsonConvert';
 import { Serializable } from './Serializable';
 import { JsonSerializer } from './JsonSerializer';
+import { IJsonConverter } from './IJsonConverter';
+
 export namespace JsonDeserializer {
     export function deserialize(json, meta: ModelInfo, settings: JsonSettings) {
         let model = fromJsonToModel(json, meta, settings);
@@ -42,7 +44,18 @@ export namespace JsonDeserializer {
             return info.Converter.fromJSON(val, settings);
         }
         if (info?.Type) {
-            let converter = JsonConverters.find(x => x.supports(val, info.Type));
+            if (info.Type === Number) {
+                return typeof val === 'number' 
+                    ? val 
+                    : Number(val);
+            }
+            let converter:IJsonConverter = null; 
+            for (let i = 0; i < JsonConverters.length; i++) {
+                if (JsonConverters[i].supports(val, info.Type)) {
+                    converter = JsonConverters[i];
+                    break;
+                }
+            }
             if (converter) {
                 return converter.fromJSON(val, settings);
             }

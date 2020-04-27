@@ -46,23 +46,6 @@ export namespace JsonConvert {
 export const JsonConverters: IJsonConverter[] = [
     {
         supports (val, type) {
-            return type === Number;
-        },
-        toJSON (val: number) {
-            return val;
-        },
-        fromJSON (val: string | number) {
-            switch (typeof val) {
-                case 'number':
-                    return val;
-                case 'string':
-                    return Number(val);
-            }
-            return val;
-        }
-    },
-    {
-        supports (val, type) {
             return type === Date || val instanceof Date;
         },
         toJSON (val: Date) {
