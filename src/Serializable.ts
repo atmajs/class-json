@@ -5,8 +5,23 @@ import { JsonUtils } from './JsonUtils';
 
 
 type DeepPartial<T> = {
-    [key in keyof T]?: DeepPartial<T[key]>
+    [key in keyof T]?: T[key] extends object ? DeepPartial<T[key]> : T[key];
 }
+
+// class Foo {
+//     name: string
+//     bar: Bar
+//     arr: any[]
+// }
+// class Bar {
+//     b1: string
+//     b2: string
+//     arr: any[]
+// }
+
+// function f (x: DeepPartial<Foo>) {}
+// f({ name: 'hello', bar: { b1: 'B1' }, arr: [ 1 ] })
+
 
 export class Serializable<T> {
 

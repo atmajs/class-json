@@ -79,7 +79,7 @@ declare module 'class-json/Serializable' {
      import { JsonSettings, IType } from 'class-json/JsonSettings';
     import { IValidationSettings } from 'class-json/JsonValidate';
     type DeepPartial<T> = {
-            [key in keyof T]?: DeepPartial<T[key]>;
+            [key in keyof T]?: T[key] extends object ? DeepPartial<T[key]> : T[key];
     };
     export class Serializable<T> {
             constructor(partial?: DeepPartial<T>);
