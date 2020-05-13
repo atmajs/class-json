@@ -13,12 +13,12 @@ export namespace JsonDeserializer {
         let model = fromJsonToModel(json, meta, settings);
         if (meta.Type) {
             let Mix = meta.Type as any;
-            if (Mix.fromJson && Mix.fromJson !== Serializable.fromJson) {
-                return Mix.fromJson(model);
+            if (Mix.fromJSON && Mix.fromJSON !== Serializable.fromJSON) {
+                return Mix.fromJSON(model);
             }
             let instance = new Mix();
-            if (instance.fromJson && instance.fromJson !== Serializable.fromJson) {
-                instance.fromJson(model);
+            if (instance.fromJSON && instance.fromJSON !== Serializable.fromJSON) {
+                instance.fromJSON(model);
                 return instance;
             }
             for (let key in model) {
@@ -36,7 +36,7 @@ export namespace JsonDeserializer {
             let value = resolveValue(json[key], info, settings);
             model[property] = value;
         }
-        
+
         return model;
     }
     export function resolveValue(val: any, info: PropertyInfo, settings: JsonSettings) {
@@ -45,11 +45,11 @@ export namespace JsonDeserializer {
         }
         if (info?.Type) {
             if (info.Type === Number) {
-                return typeof val === 'number' 
-                    ? val 
+                return typeof val === 'number'
+                    ? val
                     : Number(val);
             }
-            let converter:IJsonConverter = null; 
+            let converter:IJsonConverter = null;
             for (let i = 0; i < JsonConverters.length; i++) {
                 if (JsonConverters[i].supports(val, info.Type)) {
                     converter = JsonConverters[i];
@@ -87,7 +87,7 @@ export namespace JsonDeserializer {
     export function resolveName(key: string, mappings: {
         [jsonKey: string]: PropertyInfo;
     }, meta: ModelInfo, settings: JsonSettings) {
-        
+
         let info = mappings?.[key];
         if (info != null) {
             return info.property;
