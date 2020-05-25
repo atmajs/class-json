@@ -13,7 +13,7 @@ UTest({
             toString () { return this.foo; }
         }
 
-        let f = new Foo();        
+        let f = new Foo();
         let meta = JsonUtils.pickModelMeta(f);
 
         has_(meta, {
@@ -36,7 +36,7 @@ UTest({
         eq_(f2.toString(), 'lorem');
     },
     'support DateTime properties and under score renamings' () {
-                
+
         class Foo extends Serializable<Foo> {
             @Json.type(Date)
             createdAt: Date
@@ -47,12 +47,12 @@ UTest({
         });
 
         let json = f.toJSON({ propertyResolver: 'underScore' });
-        deepEq_(json, { created_at: f.createdAt.toISOString() });
+        deepEq_(json, { created_at: f.createdAt });
 
         let f2 = Foo.fromJSON(json, { propertyResolver: 'camelCase' });
         is_(f2.createdAt, Date);
         eq_(f2.createdAt.toString(), f.createdAt.toString());
-    },    
+    },
 
     'support raw objects' () {
         let model = { number: Math.random() };
@@ -62,7 +62,7 @@ UTest({
 
     'should deserialize default values' () {
         class Foo extends Serializable<Foo> {
-            
+
             @Json.value('foo')
             name: string
         }
@@ -76,7 +76,7 @@ UTest({
         class Product {
             id: number
         }
-        
+
         class Order {
             user: string
 
@@ -95,7 +95,7 @@ UTest({
         let root = {
             name: 'root',
             parent: '<none>',
-            categories: [], 
+            categories: [],
         };
         let foo = {
             name: 'foo',
@@ -108,7 +108,7 @@ UTest({
         root.categories = [ foo, bar ];
 
         class Meta {
-                
+
             @Json.ignore()
             parent
 

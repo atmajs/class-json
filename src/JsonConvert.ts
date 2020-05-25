@@ -49,10 +49,12 @@ export const JsonConverters: IJsonConverter[] = [
             return type === Date || val instanceof Date;
         },
         toJSON (val: Date) {
-            return val.toISOString();
+            return val;
         },
         fromJSON (val: string) {
-            return new Date(val);
+            return typeof val === 'string'
+                ? new Date(val)
+                : val;
         }
     },
     {
