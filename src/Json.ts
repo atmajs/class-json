@@ -1,6 +1,7 @@
 import { IJsonConverter } from './IJsonConverter';
 import { JsonUtils } from "./JsonUtils";
 import { IConstructor } from './JsonSettings';
+import { ModelInfo } from './ModelInfo';
 
 export namespace Json {
     export function ignore() {
@@ -70,6 +71,18 @@ export namespace Json {
             }
             let metaProp = JsonUtils.resolvePropertyMeta(target, propertyKey);
             metaProp.description = text;
+            return descriptor;
+        };
+    }
+    export function meta<T = any>(meta: Partial<ModelInfo<T>>) {
+        return function (target, propertyKey?, descriptor?) {
+            if (propertyKey == null) {
+                let metaModel = JsonUtils.resolveModelMeta(target);
+                Object.assign(metaModel, meta);
+                return;
+            }
+            let metaProp = JsonUtils.resolvePropertyMeta(target, propertyKey);
+            metaProp.Meta = <any> meta;
             return descriptor;
         };
     }

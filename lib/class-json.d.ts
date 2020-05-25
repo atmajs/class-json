@@ -14,6 +14,7 @@ declare module 'class-json' {
 declare module 'class-json/Json' {
     import { IJsonConverter } from 'class-json/IJsonConverter';
     import { IConstructor } from 'class-json/JsonSettings';
+    import { ModelInfo } from 'class-json/ModelInfo';
     export namespace Json {
         function ignore(): (target: any, propertyKey: any, descriptor?: any) => any;
         function name(name: any): (target: any, propertyKey: any, descriptor?: any) => any;
@@ -23,6 +24,7 @@ declare module 'class-json/Json' {
         function defaultValue(mix: any): (target: any, propertyKey: any, descriptor?: any) => any;
         function converter(Converter: Partial<IJsonConverter>): (target: any, propertyKey: any, descriptor?: any) => any;
         function description(text: string): (target: any, propertyKey?: any, descriptor?: any) => any;
+        function meta<T = any>(meta: Partial<ModelInfo<T>>): (target: any, propertyKey?: any, descriptor?: any) => any;
         function stringify(): (target: any, propertyKey: any, descriptor?: any) => any;
     }
 }
@@ -55,7 +57,7 @@ declare module 'class-json/JsonConvert' {
         function toJson(model: any, settings?: JsonSettings): any;
         function toJSON(model: any, settings?: JsonSettings & IType): any;
         function fromJson(model: any, settings?: JsonSettings): any;
-        function fromJSON<T>(json: any, settings?: JsonSettings & IType): any;
+        function fromJSON<T = any>(json: any, settings?: JsonSettings & IType): T;
         function stringify(instance: any, settings?: JsonSettings): string;
         function parse<T = any>(str: string, settings?: JsonSettings): T;
     }
@@ -167,6 +169,23 @@ declare module 'class-json/IJsonConverter' {
     }
 }
 
+declare module 'class-json/ModelInfo' {
+    import { PropertyInfo } from 'class-json/PropertyInfo';
+    export interface ModelInfo<T = any> {
+        description?: string;
+        Type: new (...args: any[]) => T;
+        nameMappings: {
+            [jsonKey: string]: PropertyInfo;
+        };
+        properties: {
+            [name in keyof T]: PropertyInfo;
+        };
+        defaults: {
+            [name in keyof T]: any;
+        };
+    }
+}
+
 declare module 'class-json/validation/RuleBase' {
     import { IRule, IRuleError } from 'class-json/validation/IRule';
     export type TRuleInfo = string | IRuleInfo;
@@ -196,33 +215,18 @@ declare module 'class-json/validation/IRule' {
     }
 }
 
-declare module 'class-json/ModelInfo' {
-    import { PropertyInfo } from 'class-json/PropertyInfo';
-    export interface ModelInfo<T = any> {
-        description?: string;
-        Type: new (...args: any[]) => T;
-        nameMappings: {
-            [jsonKey: string]: PropertyInfo;
-        };
-        properties: {
-            [name in keyof T]: PropertyInfo;
-        };
-        defaults: {
-            [name in keyof T]: any;
-        };
-    }
-}
-
 declare module 'class-json/PropertyInfo' {
     import { IJsonConverter } from 'class-json/IJsonConverter';
     import { IRule } from 'class-json/validation/IRule';
     import { IConstructor } from 'class-json/JsonSettings';
+    import { ModelInfo } from 'class-json/ModelInfo';
     export interface PropertyInfo {
         description?: string;
         property?: string;
         jsonIgnore?: boolean;
         jsonName?: string;
         Type?: IConstructor;
+        Meta?: ModelInfo;
         ArrayType?: IConstructor;
         MapType?: Function;
         Converter?: Partial<IJsonConverter>;

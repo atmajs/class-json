@@ -23,12 +23,12 @@ export namespace JsonConvert {
         console.warn('Obsolete (static toJson) - use toJSON instead');
         return toJSON(model, settings);
     }
-    export function  fromJSON <T> (json, settings?: JsonSettings & IType) {
+    export function  fromJSON <T = any> (json, settings?: JsonSettings & IType): T {
         if (Types.isArray(json)) {
-            return json.map(x => fromJSON(x, settings));
+            return <any> json.map(x => fromJSON(x, settings));
         }
         let Type = settings?.Type;
-        let meta = JsonUtils.pickModelMeta(Type) || getMetaFor(Type);
+        let meta = JsonUtils.pickModelMeta(Type) ?? getMetaFor(Type);
         return JsonDeserializer.deserialize(json, meta, settings);
     }
 

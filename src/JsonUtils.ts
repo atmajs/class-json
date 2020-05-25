@@ -14,10 +14,11 @@ export namespace JsonUtils {
             if (target.hasOwnProperty(META_KEY) === false) {
                 // was inherited
                 meta = obj_clone(meta);
+                meta.Type = mix;
                 Object.defineProperty(target, META_KEY, {
-                    enumerable: false, 
-                    configurable: true, 
-                    value: meta 
+                    enumerable: false,
+                    configurable: true,
+                    value: meta
                 });
             }
         }
@@ -26,7 +27,11 @@ export namespace JsonUtils {
                 Type: typeof mix === 'function' ? mix : mix.constructor,
                 properties: {}
             };
-            Object.defineProperty(target, META_KEY, { enumerable: false, configurable: true, value: meta });
+            Object.defineProperty(target, META_KEY, {
+                enumerable: false,
+                configurable: true,
+                value: meta,
+             });
         }
         return meta;
     }

@@ -19,7 +19,7 @@ export interface IJsonSchemaBase {
 export interface IJsonSchemaString {
     pattern?: string
     format?: 'date-time' | 'time' | 'date' | 'email' | 'ipv4' | 'ipv6' | 'regex' | 'uri'
-    
+
     enum?: (string | number)[]
     minLength?: number
     maxLength?: number
@@ -30,7 +30,7 @@ export interface IJsonSchemaNumber {
 }
 
 export interface IJsonSchemaBoolean {
-    
+
 }
 export interface IJsonSchemaObject {
     properties?: { [key: string] : ISchema }
@@ -40,14 +40,12 @@ export interface IJsonSchemaArray {
     items?: ISchema
 }
 
-export type ISchema = IJsonSchemaBase 
-    & IJsonSchemaString 
-    & IJsonSchemaNumber 
+export type ISchema = IJsonSchemaBase
+    & IJsonSchemaString
+    & IJsonSchemaNumber
     & IJsonSchemaBoolean
     & IJsonSchemaObject
     & IJsonSchemaArray;
-
-
 
 export namespace JsonSchema {
     export function getSchema (Type, schema?: Partial<ISchema>): ISchema {
@@ -160,9 +158,9 @@ export namespace JsonSchema {
         let keys = obj_getKeys(Type.prototype);
         for (let i = 0; i < keys.length; i++) {
             let key = keys[i];
-            if (key in object.properties 
-                || key === '__json__' 
-                || key === 'toJSON' 
+            if (key in object.properties
+                || key === '__json__'
+                || key === 'toJSON'
                 || key === 'toJson') {
                 continue;
             };

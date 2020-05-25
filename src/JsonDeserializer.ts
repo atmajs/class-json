@@ -43,15 +43,21 @@ export namespace JsonDeserializer {
         if (info?.Converter?.fromJSON) {
             return info.Converter.fromJSON(val, settings);
         }
-        if (info?.Type) {
-            if (info.Type === Number) {
+        let Type = info?.Type;
+        if (Type) {
+            if (Type === Number) {
                 return typeof val === 'number'
                     ? val
                     : Number(val);
             }
+            if (Type === String) {
+                return typeof val === 'string'
+                    ? val
+                    : String(val);
+            }
             let converter:IJsonConverter = null;
             for (let i = 0; i < JsonConverters.length; i++) {
-                if (JsonConverters[i].supports(val, info.Type)) {
+                if (JsonConverters[i].supports(val, Type)) {
                     converter = JsonConverters[i];
                     break;
                 }
@@ -59,12 +65,16 @@ export namespace JsonDeserializer {
             if (converter) {
                 return converter.fromJSON(val, settings);
             }
-            let meta = JsonUtils.pickModelMeta(info.Type);
+            let meta = JsonUtils.pickModelMeta(Type);
             if (meta) {
                 return deserialize(val, meta, settings);
             }
-            let Ctor = info.Type as any;
+            let Ctor = Type as any;
             return new Ctor(val);
+        }
+        let Meta = info?.Meta;
+        if (Meta) {
+            return deserialize(val, Meta, settings)
         }
         if (Types.isValueType(val)) {
             return val;
