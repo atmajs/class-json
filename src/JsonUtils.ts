@@ -1,7 +1,7 @@
 import { ModelInfo } from "./ModelInfo";
 import { PropertyInfo } from "./PropertyInfo";
 import { IRule } from './validation/IRule';
-import { obj_clone } from './utils/obj';
+import { obj_clone, obj_map } from './utils/obj';
 export namespace JsonUtils {
     export const META_KEY = '__json__';
     export function resolveModelMeta <TAdditional = void> (mix: object | Function): ModelInfo & TAdditional {
@@ -74,4 +74,6 @@ export namespace JsonUtils {
         let propInfo = resolvePropertyMeta(target, propertyKey);
         return propInfo.rules ?? (propInfo.rules = []);
     }
+
+    export const map = obj_map;
 }

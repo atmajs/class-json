@@ -49,3 +49,64 @@ export function obj_getProperty (obj_: any, path: string) {
     }
     return obj;
 };
+
+function keysToObj<T>(keys: (keyof T)[]) {
+    if (keys == null) {
+        return null;
+    }
+    let obj = Object.create(null);
+    for (let i = 0; i < keys.length; i++) {
+        obj[keys[i]] = 1;
+    }
+    return obj;
+}
+export function obj_map<T extends object, TOut = any>(source: T, mapper: IMapper<T>) {
+    if (source == null) {
+        return null;
+    }
+    let out: TOut = Object.create(null);
+    let excludeProps: Partial<T> = keysToObj(mapper.exclude);
+    let includeProps: Partial<T> = keysToObj(mapper.include);
+
+    for (let key in source) {
+        let val = source[key];
+        if (val == null) {
+            continue;
+        }
+        if (excludeProps != null && key in excludeProps === true) {
+            continue;
+        }
+        if (includeProps != null && key in includeProps !== true) {
+            continue;
+        }
+        let info = mapper.props?.[key];
+        if (info?.ignore) {
+            continue;
+        }
+        let name = info?.name ?? key;
+        if (info?.map) {
+            out[name] = info?.map(<any> val);
+            continue;
+        }
+        if (typeof val === 'object') {
+            val = obj_map<any>(<any> val, info);
+        }
+        out[name] = val;
+    }
+    return out;
+}
+
+
+export interface IMapper<T> {
+    ignore?: boolean
+    exclude?: (keyof T)[]
+    include?: (keyof T)[]
+    props?: {
+        [key in keyof T]?: IPropMapper<T[key]>
+    }
+}
+export interface IPropMapper<T> extends IMapper<T> {
+    ignore?: boolean
+    name?: string
+    map? (x: T): any
+}

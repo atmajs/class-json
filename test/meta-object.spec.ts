@@ -19,7 +19,8 @@ UTest({
 
         let f = new Foo();
         let meta = JsonUtils.pickModelMeta(f);
-        eq_(Object.keys(meta.properties), ['a', 'b', 'c']);
+        let fooMeta = meta.properties.foo.Meta.properties
+        deepEq_(Object.keys(fooMeta), ['a', 'b', 'c']);
 
         f.foo = { a: 'a', b: 1 };
 

@@ -112,6 +112,7 @@ declare module 'class-json/JsonUtils' {
     import { ModelInfo } from "class-json/ModelInfo";
     import { PropertyInfo } from "class-json/PropertyInfo";
     import { IRule } from 'class-json/validation/IRule';
+    import { obj_map } from 'class-json/utils/obj';
     export namespace JsonUtils {
         const META_KEY = "__json__";
         function resolveModelMeta<TAdditional = void>(mix: object | Function): ModelInfo & TAdditional;
@@ -121,6 +122,7 @@ declare module 'class-json/JsonUtils' {
         function resolvePropertyMeta<TAdditional = void>(target: object | Function, propertyKey: string): PropertyInfo & TAdditional;
         function pickPropertyRules(target: object | Function, propertyKey: string): IRule[];
         function resolvePropertyRules(target: object | Function, propertyKey: string): IRule[];
+        const map: typeof obj_map;
     }
 }
 
@@ -233,6 +235,26 @@ declare module 'class-json/PropertyInfo' {
         rules?: IRule[];
         default?: any;
         options?: any;
+    }
+}
+
+declare module 'class-json/utils/obj' {
+    export function obj_clone<T>(source: T): T;
+    export function obj_getKeys(x: any): string[];
+    export function obj_getProperty(obj_: any, path: string): any;
+    export function obj_map<T extends object, TOut = any>(source: T, mapper: IMapper<T>): TOut;
+    export interface IMapper<T> {
+        ignore?: boolean;
+        exclude?: (keyof T)[];
+        include?: (keyof T)[];
+        props?: {
+            [key in keyof T]?: IPropMapper<T[key]>;
+        };
+    }
+    export interface IPropMapper<T> extends IMapper<T> {
+        ignore?: boolean;
+        name?: string;
+        map?(x: T): any;
     }
 }
 
