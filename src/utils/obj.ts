@@ -61,8 +61,8 @@ function keysToObj<T>(keys: (keyof T)[]) {
     return obj;
 }
 export function obj_map<T extends object, TOut = any>(source: T | T[], mapper: IMapper<T>) {
-    if (source == null) {
-        return null;
+    if (source == null || typeof source !== 'object') {
+        return source;
     }
     if (Array.isArray(source)) {
         return source.map(x => obj_map(x, mapper));
@@ -92,14 +92,8 @@ export function obj_map<T extends object, TOut = any>(source: T | T[], mapper: I
             out[name] = info?.map(<any> val);
             continue;
         }
-        if (typeof val === 'object') {
-            if (val instanceof Date === false &&
-                val instanceof RegExp === false &&
-                val instanceof Number === false &&
-                val instanceof String === false) {
-
-                val = obj_map<any>(<any> val, info);
-            }
+        if (typeof val === 'object' && info != null && (info.exclude || info.include || info.props)) {
+            val = obj_map<any>(<any> val, info);
         }
         out[name] = val;
     }
