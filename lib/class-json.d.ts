@@ -242,7 +242,7 @@ declare module 'class-json/utils/obj' {
     export function obj_clone<T>(source: T): T;
     export function obj_getKeys(x: any): string[];
     export function obj_getProperty(obj_: any, path: string): any;
-    export function obj_map<T extends object, TOut = any>(source: T, mapper: IMapper<T>): TOut;
+    export function obj_map<T extends object, TOut = any>(source: T | T[], mapper: IMapper<T>): any;
     export interface IMapper<T> {
         ignore?: boolean;
         exclude?: (keyof T)[];

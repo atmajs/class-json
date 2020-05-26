@@ -60,13 +60,17 @@ function keysToObj<T>(keys: (keyof T)[]) {
     }
     return obj;
 }
-export function obj_map<T extends object, TOut = any>(source: T, mapper: IMapper<T>) {
+export function obj_map<T extends object, TOut = any>(source: T | T[], mapper: IMapper<T>) {
     if (source == null) {
         return null;
     }
+    if (Array.isArray(source)) {
+        return source.map(x => obj_map(x, mapper));
+    }
+
     let out: TOut = Object.create(null);
-    let excludeProps: Partial<T> = keysToObj(mapper.exclude);
-    let includeProps: Partial<T> = keysToObj(mapper.include);
+    let excludeProps: Partial<T> = keysToObj(mapper?.exclude);
+    let includeProps: Partial<T> = keysToObj(mapper?.include);
 
     for (let key in source) {
         let val = source[key];
@@ -79,7 +83,7 @@ export function obj_map<T extends object, TOut = any>(source: T, mapper: IMapper
         if (includeProps != null && key in includeProps !== true) {
             continue;
         }
-        let info = mapper.props?.[key];
+        let info = mapper?.props?.[key];
         if (info?.ignore) {
             continue;
         }
@@ -89,7 +93,13 @@ export function obj_map<T extends object, TOut = any>(source: T, mapper: IMapper
             continue;
         }
         if (typeof val === 'object') {
-            val = obj_map<any>(<any> val, info);
+            if (val instanceof Date === false &&
+                val instanceof RegExp === false &&
+                val instanceof Number === false &&
+                val instanceof String === false) {
+
+                val = obj_map<any>(<any> val, info);
+            }
         }
         out[name] = val;
     }
