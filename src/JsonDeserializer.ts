@@ -55,6 +55,14 @@ export namespace JsonDeserializer {
                     ? val
                     : String(val);
             }
+            if (Type === Boolean) {
+                if (typeof val === 'string') {
+                    if (val === '0' || val === 'false') {
+                        return false;
+                    }
+                }
+                return Boolean(val);
+            }
             let converter:IJsonConverter = null;
             for (let i = 0; i < JsonConverters.length; i++) {
                 if (JsonConverters[i].supports(val, Type)) {
