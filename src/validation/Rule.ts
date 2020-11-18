@@ -6,9 +6,11 @@ import { Custom } from './rules/Custom';
 import { Minimum, Maximum } from './rules/Number';
 import { StringEnum } from './rules/String';
 import { TRuleInfo, IRuleInfo } from './RuleBase';
+import { PropertyInfo } from '../PropertyInfo';
 
 export namespace Rule {
-    
+
+
     export function required(message?: string)
     export function required(opts?: IRuleInfo)
     export function required(mix?: any) {
@@ -50,7 +52,7 @@ export namespace Rule {
             return descriptor;
         };
     }
-    
+
     export function maximum(val: number, message?: string)
     export function maximum(val: number, opts?: IRuleInfo)
     export function maximum(val: number, mix?) {
@@ -61,7 +63,7 @@ export namespace Rule {
             return descriptor;
         };
     }
-    
+
     export function pattern(pattern: string | RegExp, message?: string)
     export function pattern(pattern: string | RegExp, opts?: IRuleInfo)
     export function pattern(pattern: string | RegExp, mix?) {
@@ -94,5 +96,36 @@ export namespace Rule {
             rules.unshift(rule);
             return descriptor;
         };
+    }
+}
+
+export namespace RuleUtil {
+    // Unwrap Decorators in Json.meta
+    export function unboxRules (props: {
+        [name: string]: PropertyInfo;
+    }) {
+
+        for (let key in props) {
+            let rules = props[key].rules;
+            if (rules == null) {
+                continue;
+            }
+            let fns = rules.filter(x => typeof x === 'function');
+            if (fns.length === 0) {
+                continue;
+            }
+            let target = {};
+            fns.map((fn: any) => {
+                fn(target, key);
+            });
+            let unboxed = JsonUtils.resolvePropertyRules(target, key);
+            let arr = rules.map(rule => {
+                if (typeof rule === 'function') {
+                    return unboxed.shift();
+                };
+                return rule;
+            });
+            props[key].rules = arr;
+        }
     }
 }

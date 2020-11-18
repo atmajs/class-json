@@ -2,6 +2,7 @@ import { IJsonConverter } from './IJsonConverter';
 import { JsonUtils } from "./JsonUtils";
 import { IConstructor } from './JsonSettings';
 import { ModelInfo } from './ModelInfo';
+import { RuleUtil } from './validation/Rule';
 
 export namespace Json {
     export function ignore() {
@@ -75,6 +76,9 @@ export namespace Json {
         };
     }
     export function meta<T = any>(meta: Partial<ModelInfo<T>>) {
+
+        RuleUtil.unboxRules(meta.properties);
+
         return function (target, propertyKey?, descriptor?) {
             if (propertyKey == null) {
                 let metaModel = JsonUtils.resolveModelMeta(target);

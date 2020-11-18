@@ -31,6 +31,7 @@ declare module 'class-json/Json' {
 
 declare module 'class-json/validation/Rule' {
     import { IRuleInfo } from 'class-json/validation/RuleBase';
+    import { PropertyInfo } from 'class-json/PropertyInfo';
     export namespace Rule {
         function required(message?: string): any;
         function required(opts?: IRuleInfo): any;
@@ -47,6 +48,11 @@ declare module 'class-json/validation/Rule' {
         function stringEnum(values: string[], message?: string): any;
         function stringEnum(values: string[], opts?: IRuleInfo): any;
         function validate(fn: (val: any, root: any) => string, name?: string): (target: any, propertyKey: any, descriptor?: any) => any;
+    }
+    export namespace RuleUtil {
+        function unboxRules(props: {
+            [name: string]: PropertyInfo;
+        }): void;
     }
 }
 
@@ -205,18 +211,6 @@ declare module 'class-json/validation/RuleBase' {
     }
 }
 
-declare module 'class-json/validation/IRule' {
-    export interface IRule<T = any> {
-        validate(value: any, root: any): IRuleError<T>;
-    }
-    export interface IRuleError<T = any> {
-        name: string;
-        property: string;
-        value: T;
-        message: string;
-    }
-}
-
 declare module 'class-json/PropertyInfo' {
     import { IJsonConverter } from 'class-json/IJsonConverter';
     import { IRule } from 'class-json/validation/IRule';
@@ -235,6 +229,18 @@ declare module 'class-json/PropertyInfo' {
         rules?: IRule[];
         default?: any;
         options?: any;
+    }
+}
+
+declare module 'class-json/validation/IRule' {
+    export interface IRule<T = any> {
+        validate(value: any, root: any): IRuleError<T>;
+    }
+    export interface IRuleError<T = any> {
+        name: string;
+        property: string;
+        value: T;
+        message: string;
     }
 }
 

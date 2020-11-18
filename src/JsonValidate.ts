@@ -49,7 +49,7 @@ export namespace JsonValidate {
         for (let key in model) {
             let val = model[key];
             let propInfo = meta.properties[key];
-            let error = val == null 
+            let error = val == null
                 ? checkOptional(model, root ?? model, key, propInfo, path)
                 : validateSingleValue(model, val, root ?? model, key, propInfo, path);
             if (error) {
@@ -107,7 +107,7 @@ export namespace JsonValidate {
         if (Types.isObject(val)) {
             let obj = val as any;
             let Type = propInfo?.Type;
-            let innerMeta = JsonUtils.pickModelMeta(Type) ?? JsonUtils.pickModelMeta(obj);
+            let innerMeta = JsonUtils.pickModelMeta(Type) ?? propInfo?.Meta ?? JsonUtils.pickModelMeta(obj);
             let parentPath = outerPath ? `${outerPath}.${key}` : `${key}`;
             let errors = validateByMeta(obj, root, innerMeta, parentPath);
             if (errors) {
@@ -142,17 +142,29 @@ export namespace JsonValidate {
         outerPath: string
     ) {
         let rules = propInfo?.rules;
-        if (rules == null || rules.length === 0) {
-            return null;
-        }
-        for (let rule of rules) {
-            if (rule instanceof Required) {
-                let error = rule.validate(null, root);
-                if (error) {
-                    error.property = outerPath ? `${outerPath}.${key}` : `${key}`;
-                    return [ error ]
+        if (rules != null) {
+            for (let rule of rules) {
+                if (rule instanceof Required) {
+                    let error = rule.validate(null, root);
+                    if (error) {
+                        error.property = outerPath ? `${outerPath}.${key}` : `${key}`;
+                        return [ error ]
+                    }
                 }
             }
         }
+        // check also deep nested properties, if any of them is required
+        let meta = JsonUtils.pickModelMeta(propInfo?.Type) ?? propInfo?.Meta;
+        if (meta?.properties != null) {
+            for (let prop in meta.properties) {
+                let propInfo = meta.properties[prop];
+                let $outerPath = outerPath ? `${outerPath}.${prop}` : `${prop}`;
+                let err = checkOptional(null, root, prop, propInfo, $outerPath)
+                if (err) {
+                    return err;
+                }
+            }
+        }
+        return null;
     }
 }
