@@ -44,7 +44,7 @@ export namespace JsonDeserializer {
             return info.Converter.fromJSON(val, settings);
         }
         let Type = info?.Type;
-        if (Type) {
+        if (Type != null) {
             if (Type === Number) {
                 return typeof val === 'number'
                     ? val
@@ -62,6 +62,11 @@ export namespace JsonDeserializer {
                     }
                 }
                 return Boolean(val);
+            }
+            if (Type === $BigInt) {
+                return typeof val === 'bigint'
+                    ? val
+                    : BigInt(val);
             }
             let converter:IJsonConverter = null;
             for (let i = 0; i < JsonConverters.length; i++) {
@@ -113,3 +118,6 @@ export namespace JsonDeserializer {
         return JsonSerializer.toJsonName(key, info, settings);
     }
 }
+
+
+const $BigInt = typeof BigInt !== 'undefined' ? BigInt : null;

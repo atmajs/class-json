@@ -1,4 +1,4 @@
-import { JsonSettings, IConstructor } from './JsonSettings';
+import { JsonSettings, IConstructor, IFunction } from './JsonSettings';
 import { JsonUtils } from './JsonUtils';
 import { PropertyInfo } from './PropertyInfo';
 import { Types } from './Types';
@@ -18,7 +18,7 @@ export namespace JsonSerializer {
     //     }
     //     if (Types.isArray(x)) {
     //         let arr = new Array(x.length);
-            
+
     //         for (let i = 0; i < x.length; i++) {
     //             arr[i] = serialize(x, info.ArrayType, settings);
     //         }
@@ -26,14 +26,14 @@ export namespace JsonSerializer {
     //     }
     // }
 
-    export function serializeObject(model: any, Type: IConstructor, settings: JsonSettings) {
+    export function serializeObject(model: any, Type: IConstructor | IFunction, settings: JsonSettings) {
         if (Types.isValueType(model)) {
             return model;
         }
-        
+
         let meta = JsonUtils.pickModelMeta(model) ?? JsonUtils.pickModelMeta(Type);
         let json = Object.create(null);
-       
+
         for (let key in model) {
             let propertyInfo = meta?.properties[key];
             if (propertyInfo != null && propertyInfo.jsonIgnore) {
@@ -55,11 +55,15 @@ export namespace JsonSerializer {
             return info.Converter.toJSON(val, settings);
         }
         if (Types.isValueType(val)) {
+            switch (typeof val) {
+                case 'bigint':
+                    return `0x` + val.toString(16);
+            }
             return val;
         }
         if (Types.isArray(val)) {
             let arr = new Array(val.length);
-            
+
             for (let i = 0; i < val.length; i++) {
                 arr[i] = serializeObject(val[i], info?.ArrayType, settings);
             }
@@ -82,7 +86,7 @@ export namespace JsonSerializer {
         }
         return val;
     }
-    
+
     export function toJsonName(key: string, info: PropertyInfo, settings: JsonSettings) {
         if (info?.jsonName != null) {
             return info.jsonName;

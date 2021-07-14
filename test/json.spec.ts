@@ -63,7 +63,7 @@ UTest({
     'should deserialize default values' () {
         class Foo extends Serializable<Foo> {
 
-            @Json.value('foo')
+            @Json.defaultValue('foo')
             name: string
         }
         eq_(new Foo().name, 'foo');

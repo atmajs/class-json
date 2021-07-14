@@ -1,7 +1,6 @@
 
 before_script:
-  - npm run build &
-  - sleep 5
+  - npm run build
 
 script:
   - "npm test"
@@ -9,4 +8,4 @@ script:
 language: node_js
 
 node_js:
-  - "10.1.0"
+  - 16

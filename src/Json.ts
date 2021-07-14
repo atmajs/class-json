@@ -1,6 +1,6 @@
 import { IJsonConverter } from './IJsonConverter';
 import { JsonUtils } from "./JsonUtils";
-import { IConstructor } from './JsonSettings';
+import { IConstructor, IFunction } from './JsonSettings';
 import { ModelInfo } from './ModelInfo';
 import { RuleUtil } from './validation/Rule';
 
@@ -24,7 +24,7 @@ export namespace Json {
             return descriptor;
         };
     }
-    export function type(Ctor: IConstructor, options?) {
+    export function type(Ctor: IConstructor | IFunction, options?) {
         return function (target, propertyKey, descriptor?) {
             var viaProperty = descriptor == null;
             let meta = JsonUtils.resolvePropertyMeta(target, propertyKey);
@@ -33,7 +33,7 @@ export namespace Json {
             return descriptor;
         };
     }
-    export function array(Ctor: IConstructor, options?) {
+    export function array(Ctor: IConstructor | IFunction, options?) {
         return function (target, propertyKey, descriptor?) {
             let meta = JsonUtils.resolvePropertyMeta(target, propertyKey);
             meta.ArrayType = Ctor;

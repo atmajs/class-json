@@ -13,13 +13,13 @@ declare module 'class-json' {
 
 declare module 'class-json/Json' {
     import { IJsonConverter } from 'class-json/IJsonConverter';
-    import { IConstructor } from 'class-json/JsonSettings';
+    import { IConstructor, IFunction } from 'class-json/JsonSettings';
     import { ModelInfo } from 'class-json/ModelInfo';
     export namespace Json {
         function ignore(): (target: any, propertyKey: any, descriptor?: any) => any;
         function name(name: any): (target: any, propertyKey: any, descriptor?: any) => any;
-        function type(Ctor: IConstructor, options?: any): (target: any, propertyKey: any, descriptor?: any) => any;
-        function array(Ctor: IConstructor, options?: any): (target: any, propertyKey: any, descriptor?: any) => any;
+        function type(Ctor: IConstructor | IFunction, options?: any): (target: any, propertyKey: any, descriptor?: any) => any;
+        function array(Ctor: IConstructor | IFunction, options?: any): (target: any, propertyKey: any, descriptor?: any) => any;
         function value(mix: any): (target: any, propertyKey: any, descriptor?: any) => any;
         function defaultValue(mix: any): (target: any, propertyKey: any, descriptor?: any) => any;
         function converter(Converter: Partial<IJsonConverter>): (target: any, propertyKey: any, descriptor?: any) => any;
@@ -107,10 +107,13 @@ declare module 'class-json/JsonSettings' {
         space?: number | string;
     }
     export interface IType {
-        Type?: IConstructor;
+        Type?: IConstructor | IFunction;
     }
     export interface IConstructor {
         new (...args: any[]): any;
+    }
+    export interface IFunction {
+        (...args: any[]): any;
     }
 }
 
@@ -122,7 +125,7 @@ declare module 'class-json/JsonUtils' {
     export namespace JsonUtils {
         const META_KEY = "__json__";
         function resolveModelMeta<TAdditional = void>(mix: object | Function): ModelInfo & TAdditional;
-        function pickModelMeta<TAdditional = void>(mix: any | Function): ModelInfo & TAdditional;
+        function pickModelMeta<TAdditional = {}>(mix: any | Function): ModelInfo & TAdditional;
         function hasModelMeta(mix: object | Function): boolean;
         function pickPropertyMeta<TAdditional = void>(target: object | Function, propertyKey: string): PropertyInfo & TAdditional;
         function resolvePropertyMeta<TAdditional = void>(target: object | Function, propertyKey: string): PropertyInfo & TAdditional;
@@ -214,16 +217,16 @@ declare module 'class-json/validation/RuleBase' {
 declare module 'class-json/PropertyInfo' {
     import { IJsonConverter } from 'class-json/IJsonConverter';
     import { IRule } from 'class-json/validation/IRule';
-    import { IConstructor } from 'class-json/JsonSettings';
+    import { IConstructor, IFunction } from 'class-json/JsonSettings';
     import { ModelInfo } from 'class-json/ModelInfo';
     export interface PropertyInfo {
         description?: string;
         property?: string;
         jsonIgnore?: boolean;
         jsonName?: string;
-        Type?: IConstructor;
+        Type?: IConstructor | IFunction;
         Meta?: ModelInfo;
-        ArrayType?: IConstructor;
+        ArrayType?: IConstructor | IFunction;
         MapType?: Function;
         Converter?: Partial<IJsonConverter>;
         rules?: IRule[];
