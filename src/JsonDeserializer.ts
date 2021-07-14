@@ -29,6 +29,9 @@ export namespace JsonDeserializer {
         return model;
     }
     export function fromJsonToModel(json, meta: ModelInfo, settings: JsonSettings) {
+        if (Types.isArray(json)) {
+            return json.map(value => fromJsonToModel(value, meta, settings));
+        }
         var model = Object.create(null);
         for (let key in json) {
             let property = resolveName(key, meta.nameMappings, meta, settings);
@@ -80,6 +83,7 @@ export namespace JsonDeserializer {
             }
             let meta = JsonUtils.pickModelMeta(Type);
             if (meta) {
+                console.log('META', meta);
                 return deserialize(val, meta, settings);
             }
             let Ctor = Type as any;

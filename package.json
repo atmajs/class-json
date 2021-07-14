@@ -5,7 +5,7 @@
         "name": "Alexander Kit",
         "email": "alex.kit@atmajs.com"
     },
-    "version": "0.3.4",
+    "version": "0.3.5",
     "main": "./lib/class-json.js",
     "types": "./lib/class-json.d.ts",
     "repository": {
@@ -73,5 +73,8 @@
                 }
             }
         }
+    },
+    "dependencies": {
+        "class-json": "^0.3.4"
     }
 }

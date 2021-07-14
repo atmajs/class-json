@@ -39,5 +39,34 @@ UTest({
         let f2 = JsonConvert.fromJSON <Foo> (json, { Type: Foo });
         eq_(f2.foo.c instanceof Date, true);
         eq_(f2.bar instanceof Date, true);
+    },
+
+    'add meta to array' () {
+        class Foo {
+            @Json.type(Date)
+            date: Date
+
+
+            @Json.meta({
+                properties: {
+                    date: { Type: Date },
+                }
+            })
+            foo: { date: Date }[]
+        }
+        let date = new Date();
+
+        // let f = new Foo();
+        // f.foo = [ { date }  ]
+        // f.date = date;
+
+        let json = JsonConvert.fromJSON({
+            foo: [ { date: date.toISOString() }]
+        }, { Type: Foo });
+
+        is_(json.foo.push, Function);
+        is_(json.foo[0].date, Date);
+        deepEq_(json.foo, [ { date: date  }]);
+
     }
 })

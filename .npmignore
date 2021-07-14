@@ -4,4 +4,6 @@ test/
 tools/
 typings/
 .gitignore
+.vscode
 src/
+tsconfig-build.json
