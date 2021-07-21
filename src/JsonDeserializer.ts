@@ -67,6 +67,10 @@ export namespace JsonDeserializer {
                 return Boolean(val);
             }
             if (Type === $BigInt) {
+                let fromJson = settings.types?.bigint?.fromJSON;
+                if (fromJson != null) {
+                    return fromJson(val);
+                }
                 return typeof val === 'bigint'
                     ? val
                     : BigInt(val);

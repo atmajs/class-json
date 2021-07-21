@@ -16,7 +16,6 @@ export namespace JsonConvert {
         if (Types.isArray(model)) {
             return model.map(x => toJSON(x, settings));
         }
-
         return JsonSerializer.serializeObject(model, settings?.Type, settings);
     }
     export function fromJson (model, settings?: JsonSettings) {
@@ -45,6 +44,7 @@ export namespace JsonConvert {
 
 export const JsonConverters: IJsonConverter[] = [
     {
+        name: 'date',
         supports (val, type) {
             return type === Date || val instanceof Date;
         },
@@ -58,6 +58,7 @@ export const JsonConverters: IJsonConverter[] = [
         }
     },
     {
+        name: 'regex',
         supports (val, type) {
             return type === RegExp || val instanceof RegExp;
         },

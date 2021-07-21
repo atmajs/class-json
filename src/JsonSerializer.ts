@@ -55,7 +55,13 @@ export namespace JsonSerializer {
             return info.Converter.toJSON(val, settings);
         }
         if (Types.isValueType(val)) {
-            switch (typeof val) {
+            let type = typeof val;
+            let types = settings?.types
+            if (types != null && typeof types[type]?.toJSON === 'function') {
+                return types[type]?.toJSON(val);
+            }
+
+            switch (type) {
                 case 'bigint':
                     return `0x` + val.toString(16);
             }

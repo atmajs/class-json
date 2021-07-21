@@ -102,9 +102,16 @@ declare module 'class-json/Serializable' {
 }
 
 declare module 'class-json/JsonSettings' {
+    type TypeName = 'bigint' | 'number' | 'regexp' | 'date' | 'boolean' | 'buffer';
     export interface JsonSettings {
         propertyResolver?: 'camelCase' | 'underScore';
         space?: number | string;
+        types?: {
+            [type in TypeName]?: {
+                fromJSON?(jsonValue: any): any;
+                toJSON?(instanceValue: any): any;
+            };
+        };
     }
     export interface IType {
         Type?: IConstructor | IFunction;
@@ -115,6 +122,7 @@ declare module 'class-json/JsonSettings' {
     export interface IFunction {
         (...args: any[]): any;
     }
+    export {};
 }
 
 declare module 'class-json/JsonUtils' {
@@ -174,6 +182,7 @@ declare module 'class-json/JsonSchema' {
 declare module 'class-json/IJsonConverter' {
     import { JsonSettings } from 'class-json/JsonSettings';
     export interface IJsonConverter {
+        name?: string;
         supports(val: any, type?: Function): boolean;
         fromJSON(jsonValue: any, settings?: JsonSettings): any;
         toJSON(instanceValue: any, settings?: JsonSettings): any;
