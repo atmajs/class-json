@@ -43,6 +43,9 @@ export namespace JsonDeserializer {
         return model;
     }
     export function resolveValue(val: any, info: PropertyInfo, settings: JsonSettings) {
+        if (val == null) {
+            return null;
+        }
         if (info?.Converter?.fromJSON) {
             return info.Converter.fromJSON(val, settings);
         }
@@ -87,7 +90,6 @@ export namespace JsonDeserializer {
             }
             let meta = JsonUtils.pickModelMeta(Type);
             if (meta) {
-                console.log('META', meta);
                 return deserialize(val, meta, settings);
             }
             let Ctor = Type as any;
