@@ -153,18 +153,19 @@ export namespace JsonValidate {
                 }
             }
         }
+        // @Changed: if the value is null, and is not required, doesn't matter if sub-properties are required
         // check also deep nested properties, if any of them is required
-        let meta = JsonUtils.pickModelMeta(propInfo?.Type) ?? propInfo?.Meta;
-        if (meta?.properties != null) {
-            for (let prop in meta.properties) {
-                let propInfo = meta.properties[prop];
-                let $outerPath = outerPath ? `${outerPath}.${prop}` : `${prop}`;
-                let err = checkOptional(null, root, prop, propInfo, $outerPath)
-                if (err) {
-                    return err;
-                }
-            }
-        }
+        // let meta = JsonUtils.pickModelMeta(propInfo?.Type) ?? propInfo?.Meta;
+        // if (meta?.properties != null) {
+        //     for (let prop in meta.properties) {
+        //         let propInfo = meta.properties[prop];
+        //         let $outerPath = outerPath ? `${outerPath}.${prop}` : `${prop}`;
+        //         let err = checkOptional(null, root, prop, propInfo, $outerPath)
+        //         if (err) {
+        //             return err;
+        //         }
+        //     }
+        // }
         return null;
     }
 }
