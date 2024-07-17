@@ -139,6 +139,10 @@ declare module 'class-json/JsonUtils' {
         function resolvePropertyMeta<TAdditional = void>(target: object | Function, propertyKey: string): PropertyInfo & TAdditional;
         function pickPropertyRules(target: object | Function, propertyKey: string): IRule[];
         function resolvePropertyRules(target: object | Function, propertyKey: string): IRule[];
+        /** For environments without @decorator support. The deco methods for each field can be listed extra */
+        function decorate<T extends new (...args: any) => any>(Ctor: T, fields: {
+            [key in InstanceType<T>]: Function[];
+        }): T;
         const map: typeof obj_map;
     }
 }

@@ -5,47 +5,86 @@
         "name": "Alexander Kit",
         "email": "alex.kit@atmajs.com"
     },
-    "version": "0.3.8",
-    "main": "./lib/class-json.js",
-    "types": "./lib/class-json.d.ts",
+    "version": "0.4.1",
+    "main": "./lib/umd/json.js",
+    "types": "./lib/json.d.ts",
+    "exports": {
+        ".": {
+            "import": "./lib/esm/json.mjs",
+            "require": "./lib/umd/json.js"
+        }
+    },
     "repository": {
         "type": "git",
         "url": "git://github.com/atmajs/class-json.git"
     },
     "devDependencies": {
         "@types/sinon": "^2.3.3",
-        "app-bundler": "0.0.82",
-        "atma": "^0.12.14",
-        "atma-loader-ts": "^1.1.12",
-        "dts-bundle": "^0.7.3"
+        "app-bundler": "^0.2.7",
+        "atma": "^0.15.23",
+        "atma-loader-ts": "^1.2.7",
+        "dts-bundle": "^0.7.3",
+        "shellbee": "^0.5.29"
     },
     "scripts": {
         "test": "atma test",
         "build": "app-bundler && npm run build-dts",
         "watch": "app-bundler --watch",
+        "debug": "app-bundler --inspect-brk",
         "server": "atma server",
         "build-dts": "tsc -p tsconfig-build.json && atma run tools/build-dts",
         "release": "echo \"Run npx atma pub -\"message\"\""
     },
     "license": "MIT",
     "app-bundler": {
-        "file": "src/export.ts",
-        "outputMain": "lib/class-json.js",
-        "package": {
-            "module": "commonjs",
-            "moduleName": "class-json",
-            "moduleWrapper": "umd",
-            "commonjs": {
-                "output": "simplified"
+        "apps": {
+            "umd": {
+                "outputMain": "lib/umd/json.js",
+                "package": {
+                    "module": "commonjs",
+                    "moduleName": "class-json",
+                    "moduleWrapper": "umd",
+                    "commonjs": {
+                        "output": "simplified"
+                    }
+                }
+            },
+            "esm": {
+                "outputMain": "lib/esm/json.mjs",
+                "package": {
+                    "module": "commonjs",
+                    "moduleName": "class-json",
+                    "moduleWrapper": "esm",
+                    "commonjs": {
+                        "output": "simplified"
+                    }
+                }
             }
         },
-        "defaultExtensions": {
-            "js": "ts"
-        },
-        "middlewares": {
-            "ts": [
-                "atma-loader-ts:read"
-            ]
+        "common": {
+            "file": "src/export.ts",
+            "extensions": {
+                "io": {
+                    "type": "js"
+                }
+            },
+            "defaultExtensions": {
+                "js": "ts"
+            },
+            "middlewares": {
+                "ts": [
+                    "atma-loader-ts:read"
+                ]
+            },
+            "settings": {
+                "atma-loader-ts": {
+                    "typescript": {
+                        "compilerOptions": {
+                            "module": "CommonJS"
+                        }
+                    }
+                }
+            }
         }
     },
     "atma": {
