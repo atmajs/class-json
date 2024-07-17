@@ -10,7 +10,7 @@ const Foo = JsonUtils.decorate(class {
     toString () { return this.foo; }
 }, {
     foo: [
-        Json.name('bar'),
+        Json.name('qux'),
     ]
 })
 
