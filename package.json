@@ -20,7 +20,7 @@
     },
     "devDependencies": {
         "@types/sinon": "^2.3.3",
-        "app-bundler": "^0.2.7",
+        "app-bundler": "^0.2.8",
         "atma": "^0.15.23",
         "atma-loader-ts": "^1.2.7",
         "dts-bundle": "^0.7.3",
