@@ -5,7 +5,7 @@
         "name": "Alexander Kit",
         "email": "alex.kit@atmajs.com"
     },
-    "version": "0.4.1",
+    "version": "0.4.2",
     "main": "./lib/umd/json.js",
     "types": "./lib/json.d.ts",
     "exports": {
@@ -112,8 +112,5 @@
                 }
             }
         }
-    },
-    "dependencies": {
-        "class-json": "^0.3.4"
     }
 }
